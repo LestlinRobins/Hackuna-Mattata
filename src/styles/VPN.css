@@ -1,0 +1,198 @@
+/* File: src/styles/VPN.css */
+.vpn {
+  padding: 1.5rem 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.vpn h1 {
+  font-size: 1.75rem;
+  margin-bottom: 1rem;
+  text-align: center;
+}
+
+.connection-status {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1.5rem;
+  padding: 1.5rem;
+  background-color: var(--secondary-bg);
+  border-radius: 16px;
+  margin-bottom: 1rem;
+}
+
+.status-indicator {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+
+.indicator-ripple {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  position: relative;
+}
+
+.status-indicator.connected {
+  background-color: rgba(46, 204, 113, 0.1);
+}
+
+.status-indicator.connected .indicator-ripple {
+  background-color: #2ecc71;
+  animation: pulse 1.5s infinite;
+}
+
+.status-indicator.disconnected {
+  background-color: rgba(231, 76, 60, 0.1);
+}
+
+.status-indicator.disconnected .indicator-ripple {
+  background-color: #e74c3c;
+}
+
+@keyframes pulse {
+  0% {
+    box-shadow: 0 0 0 0 rgba(46, 204, 113, 0.6);
+  }
+  70% {
+    box-shadow: 0 0 0 15px rgba(46, 204, 113, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(46, 204, 113, 0);
+  }
+}
+
+.status-info h2 {
+  font-size: 1.5rem;
+  margin-bottom: 0.25rem;
+}
+
+.status-info p {
+  color: var(--text-secondary);
+}
+
+.connection-button {
+  display: block;
+  width: 100%;
+  padding: 1rem 0;
+  border: none;
+  border-radius: 12px;
+  font-family: "Space Mono", monospace;
+  font-weight: 700;
+  font-size: 1rem;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.connection-button.connect {
+  background-color: var(--accent-color);
+  color: white;
+}
+
+.connection-button.connect:hover {
+  background-color: var(--accent-hover);
+}
+
+.connection-button.disconnect {
+  background-color: rgba(231, 76, 60, 0.1);
+  color: #e74c3c;
+  border: 1px solid #e74c3c;
+}
+
+.connection-button.disconnect:hover {
+  background-color: rgba(231, 76, 60, 0.2);
+}
+
+.location-selector {
+  margin-top: 1rem;
+}
+
+.location-selector h3 {
+  font-size: 1rem;
+  margin-bottom: 0.75rem;
+  color: var(--text-secondary);
+}
+
+.location-list {
+  background-color: var(--secondary-bg);
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.location-item {
+  display: flex;
+  align-items: center;
+  padding: 1rem;
+  border-bottom: 1px solid var(--border-color);
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.location-item:last-child {
+  border-bottom: none;
+}
+
+.location-item:hover {
+  background-color: rgba(255, 255, 255, 0.05);
+}
+
+.location-item.selected {
+  background-color: rgba(52, 152, 219, 0.1);
+}
+
+.location-flag {
+  font-size: 1.5rem;
+  margin-right: 1rem;
+}
+
+.location-details {
+  flex: 1;
+}
+
+.location-details h4 {
+  font-size: 0.9rem;
+  margin-bottom: 0.25rem;
+}
+
+.ping {
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+}
+
+.selected-check {
+  font-size: 1.25rem;
+  color: var(--accent-color);
+}
+
+.vpn-stats {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 1rem;
+}
+
+.stat-item {
+  text-align: center;
+  background-color: var(--secondary-bg);
+  padding: 1rem;
+  border-radius: 12px;
+  width: 32%;
+}
+
+.stat-value {
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin-bottom: 0.25rem;
+}
+
+.stat-label {
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+}

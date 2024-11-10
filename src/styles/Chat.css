@@ -1,0 +1,173 @@
+/* File: src/styles/Chat.css */
+.chat {
+  padding: 1.5rem 1rem;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.chat h1 {
+  font-size: 1.75rem;
+  margin-bottom: 1rem;
+  text-align: center;
+}
+
+.placeholder-text {
+  text-align: center;
+  color: var(--text-secondary);
+  font-size: 1rem;
+  margin: 2rem 0;
+}
+
+.message-container {
+  flex: 1;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  padding: 1rem 0;
+}
+
+.message {
+  max-width: 80%;
+  padding: 0.75rem 1rem;
+  border-radius: 16px;
+  position: relative;
+  word-break: break-word;
+}
+
+.message.sent {
+  background-color: var(--accent-color);
+  color: white;
+  align-self: flex-end;
+  border-bottom-right-radius: 4px;
+}
+
+.message.received {
+  background-color: var(--secondary-bg);
+  align-self: flex-start;
+  border-bottom-left-radius: 4px;
+}
+
+.message-time {
+  font-size: 0.65rem;
+  opacity: 0.7;
+  text-align: right;
+  margin-top: 0.25rem;
+}
+
+.message-input {
+  display: flex;
+  align-items: center;
+  background-color: var(--secondary-bg);
+  border-radius: 24px;
+  padding: 0.5rem;
+  margin-top: 1rem;
+}
+
+.input-field {
+  flex: 1;
+  background: none;
+  border: none;
+  color: var(--text-primary);
+  padding: 0.5rem 1rem;
+  font-family: "Work Sans", sans-serif;
+  font-size: 0.9rem;
+}
+
+.input-field:focus {
+  outline: none;
+}
+
+.send-button {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background-color: var(--accent-color);
+  color: white;
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.send-button:hover {
+  background-color: var(--accent-hover);
+}
+
+.encryption-notice {
+  text-align: center;
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+  margin-top: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.lock-icon {
+  color: var(--accent-color);
+}
+
+.contacts-list {
+  margin-bottom: 1.5rem;
+}
+
+.contacts-list h2 {
+  font-size: 1.1rem;
+  margin-bottom: 0.75rem;
+}
+
+.contact-item {
+  display: flex;
+  align-items: center;
+  padding: 0.75rem;
+  background-color: var(--secondary-bg);
+  border-radius: 12px;
+  margin-bottom: 0.5rem;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.contact-item:hover {
+  background-color: rgba(255, 255, 255, 0.05);
+}
+
+.contact-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background-color: var(--accent-color);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 0.75rem;
+  font-weight: 600;
+  color: white;
+}
+
+.contact-info {
+  flex: 1;
+}
+
+.contact-name {
+  font-size: 0.9rem;
+  margin-bottom: 0.25rem;
+}
+
+.contact-status {
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+}
+
+.online-indicator {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background-color: #2ecc71;
+  display: inline-block;
+  margin-right: 0.5rem;
+}
