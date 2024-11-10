@@ -278,13 +278,22 @@ const Chat = () => {
   // Delete a message
   const deleteMessage = async (messageId) => {
     try {
-      const { error } = await supabase
-        .from("messages")
-        .delete()
-        .eq("id", messageId);
+      // First, find the message element and add the dissolving class
+      const messageElement = document.getElementById(`message-${messageId}`);
+      if (messageElement) {
+        messageElement.classList.add("dissolving");
 
-      if (error) throw error;
-      setMessages(messages.filter((msg) => msg.id !== messageId));
+        // Wait for animation to complete before removing from database and state
+        setTimeout(async () => {
+          const { error } = await supabase
+            .from("messages")
+            .delete()
+            .eq("id", messageId);
+
+          if (error) throw error;
+          setMessages(messages.filter((msg) => msg.id !== messageId));
+        }, 800); // Match this timeout to the animation duration
+      }
     } catch (error) {
       console.error("Error deleting message:", error);
     }
@@ -389,9 +398,11 @@ const Chat = () => {
           messages.map((message) => (
             <div
               key={message.id}
+              id={`message-${message.id}`} // Add this ID
               className={`message-wrapper ${
                 message.user_id === currentUser.id ? "own" : ""
               }`}
+              dataText={message.content}
             >
               {message.user_id !== currentUser.id && (
                 <div className="message-avatar">

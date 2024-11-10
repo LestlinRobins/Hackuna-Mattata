@@ -4,6 +4,7 @@
   flex-direction: column;
   height: 100%;
   background-color: var(--primary-bg);
+  z-index: 2;
 }
 
 .chat-header {
@@ -153,4 +154,31 @@
 
 .input-button:hover {
   opacity: 0.9;
+}
+@keyframes dissolve {
+  0% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  20% {
+    opacity: 0.8;
+    filter: blur(3px) hue-rotate(30deg) drop-shadow(-5px 5px 0px red)
+      invert(25%);
+  }
+  50% {
+    opacity: 0.5;
+    filter: blur(5px) hue-rotate(60deg) drop-shadow(-10px 5px 10px red)
+      invert(50%);
+  }
+  100% {
+    opacity: 0;
+    filter: blur(7px) hue-rotate(90deg) drop-shadow(-15px 5px 20px red)
+      invert(75%);
+  }
+}
+
+/* Add this class for messages being deleted */
+.message-wrapper.dissolving {
+  animation: dissolve 0.8s ease-out forwards;
+  pointer-events: none;
 }
