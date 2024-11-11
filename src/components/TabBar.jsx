@@ -5,6 +5,8 @@ import {
   FiGlobe,
   FiShield,
   FiInfo,
+  FiPhoneCall,
+  FiPhone,
 } from "react-icons/fi";
 import "../styles/TabBar.css";
 
@@ -13,7 +15,7 @@ const TabBar = ({ activeTab, setActiveTab }) => {
     { id: "home", icon: <FiHome />, label: "Home" },
     { id: "chat", icon: <FiMessageSquare />, label: "Chat" },
     { id: "browser", icon: <FiGlobe />, label: "Browser" },
-    { id: "vpn", icon: <FiShield />, label: "VPN" },
+    { id: "vpn", icon: <FiPhoneCall />, label: "Call" },
     { id: "info", icon: <FiInfo />, label: "Info" },
   ];
 

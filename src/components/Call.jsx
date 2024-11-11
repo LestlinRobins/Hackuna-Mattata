@@ -1,8 +1,8 @@
 // File: src/components/VPN.jsx
 import { useState } from "react";
-import "../styles/VPN.css";
+import "../styles/Call.css";
 
-const VPN = () => {
+const Call = () => {
   const [isConnected, setIsConnected] = useState(false);
   const [selectedLocation, setSelectedLocation] = useState("automatic");
 
@@ -91,4 +91,4 @@ const VPN = () => {
   );
 };
 
-export default VPN;
+export default Call;

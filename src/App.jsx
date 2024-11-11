@@ -4,7 +4,7 @@ import { createRoot } from "react-dom/client";
 import Home from "./components/Home";
 import Chat from "./components/Chat";
 import Browser from "./components/Browser";
-import VPN from "./components/VPN";
+import Call from "./components/Call";
 import Info from "./components/Info";
 import TabBar from "./components/TabBar";
 import "./App.css";
@@ -21,7 +21,7 @@ function App() {
       case "browser":
         return <Browser />;
       case "vpn":
-        return <VPN />;
+        return <Call />;
       case "info":
         return <Info />;
       default:
