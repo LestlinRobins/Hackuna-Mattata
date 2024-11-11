@@ -420,15 +420,6 @@ const Chat = () => {
                     deleteMessage(message.id)
                   }
                 >
-                  <button
-                    className="reply-button"
-                    onClick={() =>
-                      message.user_id === currentUser.id &&
-                      deleteMessage(message.id)
-                    }
-                  >
-                    Delete
-                  </button>
                   {message.content}
                 </div>
 
