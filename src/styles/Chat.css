@@ -140,6 +140,7 @@
   justify-content: center;
   cursor: pointer;
   transition: background-color 0.2s ease;
+  padding: 0px;
   color: white;
 }
 

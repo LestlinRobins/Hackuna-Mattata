@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from "react";
-import { FiSend, FiPlus, FiArrowLeft } from "react-icons/fi";
+import { FiPlus, FiArrowLeft, FiSend } from "react-icons/fi";
 import "../styles/Chat.css";
 import { supabase } from "../supabase";
 
@@ -419,6 +419,8 @@ const Chat = () => {
                     message.user_id === currentUser.id &&
                     deleteMessage(message.id)
                   }
+                  onDragStart={() => replyToMessage(message.id)}
+                  draggable={true}
                 >
                   {message.content}
                 </div>
@@ -449,9 +451,6 @@ const Chat = () => {
           value={newMessage}
           onChange={(e) => setNewMessage(e.target.value)}
         />
-        <button type="button" className="input-button plus-button">
-          <FiPlus />
-        </button>
         <button type="submit" className="input-button send-button">
           <FiSend />
         </button>
