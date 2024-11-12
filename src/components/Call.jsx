@@ -1,92 +1,107 @@
-// File: src/components/VPN.jsx
+// File: src/components/Call.jsx
 import { useState } from "react";
+import { FiPhone, FiVideo, FiMic, FiMicOff, FiVideoOff } from "react-icons/fi";
 import "../styles/Call.css";
 
 const Call = () => {
-  const [isConnected, setIsConnected] = useState(false);
-  const [selectedLocation, setSelectedLocation] = useState("automatic");
+  const [isInCall, setIsInCall] = useState(false);
+  const [isMuted, setIsMuted] = useState(false);
+  const [isVideoOn, setIsVideoOn] = useState(true);
 
-  const locations = [
-    { id: "automatic", name: "Automatic", flag: "🌐", ping: "12 ms" },
-    { id: "us", name: "United States", flag: "🇺🇸", ping: "45 ms" },
-    { id: "uk", name: "United Kingdom", flag: "🇬🇧", ping: "78 ms" },
-    { id: "jp", name: "Japan", flag: "🇯🇵", ping: "120 ms" },
-    { id: "de", name: "Germany", flag: "🇩🇪", ping: "65 ms" },
-  ];
+  const [recentCalls] = useState([
+    { id: "call1", name: "AN1234", time: "10:45 AM", missed: false },
+    { id: "call2", name: "XY5678", time: "9:22 AM", missed: true },
+    { id: "call3", name: "KL9012", time: "Yesterday", missed: false },
+  ]);
 
-  const toggleConnection = () => {
-    setIsConnected(!isConnected);
+  const toggleCall = () => {
+    setIsInCall(!isInCall);
+  };
+
+  const toggleMute = () => {
+    setIsMuted(!isMuted);
+  };
+
+  const toggleVideo = () => {
+    setIsVideoOn(!isVideoOn);
   };
 
   return (
-    <div className="vpn">
-      <h1>Secure VPN</h1>
+    <div className="call">
+      <h1>Secure Calls</h1>
 
-      <div className="connection-status">
-        <div
-          className={`status-indicator ${
-            isConnected ? "connected" : "disconnected"
-          }`}
-        >
-          <div className="indicator-ripple"></div>
-        </div>
-        <div className="status-info">
-          <h2>{isConnected ? "Connected" : "Disconnected"}</h2>
-          {isConnected && (
-            <p>
-              Via {locations.find((loc) => loc.id === selectedLocation).name}
-            </p>
-          )}
-        </div>
-      </div>
-
-      <button
-        onClick={toggleConnection}
-        className={`connection-button ${
-          isConnected ? "disconnect" : "connect"
-        }`}
-      >
-        {isConnected ? "Disconnect" : "Connect Now"}
-      </button>
-
-      <div className="location-selector">
-        <h3>Select Location</h3>
-        <div className="location-list">
-          {locations.map((location) => (
-            <div
-              key={location.id}
-              className={`location-item ${
-                selectedLocation === location.id ? "selected" : ""
-              }`}
-              onClick={() => setSelectedLocation(location.id)}
-            >
-              <div className="location-flag">{location.flag}</div>
-              <div className="location-details">
-                <h4>{location.name}</h4>
-                <p className="ping">Ping: {location.ping}</p>
-              </div>
-              {selectedLocation === location.id && (
-                <div className="selected-check">✓</div>
-              )}
+      {!isInCall ? (
+        <>
+          <div className="call-section">
+            <h2>Recent</h2>
+            <div className="recent-calls">
+              {recentCalls.map((call) => (
+                <div
+                  key={call.id}
+                  className={`call-item ${call.missed ? "missed" : ""}`}
+                >
+                  <div className="call-avatar">{call.name.substring(0, 2)}</div>
+                  <div className="call-details">
+                    <h3>{call.name}</h3>
+                    <p>{call.time}</p>
+                  </div>
+                  <button className="call-action">
+                    <FiPhone />
+                  </button>
+                </div>
+              ))}
             </div>
-          ))}
-        </div>
-      </div>
+          </div>
 
-      <div className="vpn-stats">
-        <div className="stat-item">
-          <p className="stat-value">1.45 GB</p>
-          <p className="stat-label">Downloaded</p>
+          <div className="call-dialpad">
+            <input
+              type="text"
+              placeholder="Enter ID or search"
+              className="call-input"
+            />
+            <div className="call-buttons">
+              <button className="call-button voice" onClick={toggleCall}>
+                <FiPhone />
+              </button>
+              <button
+                className="call-button video"
+                onClick={() => {
+                  setIsVideoOn(true);
+                  toggleCall();
+                }}
+              >
+                <FiVideo />
+              </button>
+            </div>
+          </div>
+        </>
+      ) : (
+        <div className="active-call">
+          <div className="caller-info">
+            <div className="large-avatar">{isVideoOn ? "Video" : "AN"}</div>
+            <h2>AN1234</h2>
+            <p>Secure call in progress</p>
+          </div>
+
+          <div className="call-controls">
+            <button
+              className={`control-button ${isMuted ? "active" : ""}`}
+              onClick={toggleMute}
+            >
+              {isMuted ? <FiMicOff /> : <FiMic />}
+            </button>
+            <button className="control-button end" onClick={toggleCall}>
+              <FiPhone />
+            </button>
+            <button
+              className={`control-button ${!isVideoOn ? "active" : ""}`}
+              onClick={toggleVideo}
+            >
+              {isVideoOn ? <FiVideo /> : <FiVideoOff />}
+            </button>
+          </div>
         </div>
-        <div className="stat-item">
-          <p className="stat-value">428 MB</p>
-          <p className="stat-label">Uploaded</p>
-        </div>
-        <div className="stat-item">
-          <p className="stat-value">3h 42m</p>
-          <p className="stat-label">Connected</p>
-        </div>
-      </div>
+      )}
     </div>
   );
 };

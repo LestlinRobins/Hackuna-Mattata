@@ -1,6 +1,5 @@
 // File: src/App.jsx
 import { useState } from "react";
-import { createRoot } from "react-dom/client";
 import Home from "./components/Home";
 import Chat from "./components/Chat";
 import Browser from "./components/Browser";
@@ -20,7 +19,7 @@ function App() {
         return <Chat />;
       case "browser":
         return <Browser />;
-      case "vpn":
+      case "call":
         return <Call />;
       case "info":
         return <Info />;

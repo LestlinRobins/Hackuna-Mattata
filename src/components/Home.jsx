@@ -12,7 +12,9 @@ const Home = () => {
       </header>
 
       <div className="status-card">
-        <div className="status-icon protected"></div>
+        <div className="status-icon protected">
+          <span className="status-check">✓</span>
+        </div>
         <div className="status-info">
           <h2>Protected</h2>
           <p>Your connection is secure</p>
@@ -28,7 +30,10 @@ const Home = () => {
 
         <div className="feature-item">
           <h3>Data Saved</h3>
-          <p className="data-value">1.2 GB</p>
+          <div className="data">
+            <p className="data-value">1.2</p>
+            <p className="data-unit">GB</p>
+          </div>
           <p>This month</p>
         </div>
 
