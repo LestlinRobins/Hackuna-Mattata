@@ -172,7 +172,9 @@
 .send-button {
   background-color: #9c27b0;
 }
-
+.start-button {
+  background-color: #9c27b0;
+}
 .input-button:hover {
   opacity: 0.9;
 }

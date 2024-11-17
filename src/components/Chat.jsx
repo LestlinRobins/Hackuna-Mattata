@@ -340,7 +340,7 @@ const Chat = () => {
                 setCurrentUser({ ...currentUser, id: e.target.value })
               }
             />
-            <button type="submit" className="input-button send-button">
+            <button type="submit" className="start-button">
               Start Chat
             </button>
           </form>
