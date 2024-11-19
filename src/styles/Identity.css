@@ -1,4 +1,4 @@
-/* File: src/styles/Home.css */
+/* File: src/styles/Identity.css */
 :root {
   --bg-color: #121212;
   --card-bg: #1e1e1e;
@@ -8,19 +8,13 @@
   --accent-pink: #e91e63;
 }
 
-body {
-  background-color: var(--bg-color);
-  color: var(--text-primary);
-  font-family: "SF Pro Text", "Helvetica Neue", Arial, sans-serif;
-  margin: 0;
-  padding: 0;
-}
-
-.home {
+.identity {
   display: flex;
   flex-direction: column;
   padding: 1.5rem 1rem;
   height: 100vh;
+  background-color: var(--bg-color);
+  color: var(--text-primary);
 }
 
 .header {
@@ -40,97 +34,83 @@ body {
   font-size: 1.2rem;
 }
 
-.connection-banner {
+.success-banner {
   display: flex;
   align-items: center;
+  justify-content: center;
   background-color: rgba(76, 175, 80, 0.15);
   border: 1px solid var(--accent-green);
   border-radius: 50px;
-  padding: 0.5rem 1rem;
+  padding: 0.75rem 1rem;
   margin-bottom: 2rem;
   color: var(--accent-green);
 }
 
 .status-icon {
   margin-right: 0.5rem;
+  font-size: 1.1rem;
 }
 
-.stats-container {
+.profile-container {
   display: flex;
-  justify-content: space-between;
-  margin-bottom: 2rem;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 3rem;
 }
 
-.stat-item {
-  background-color: var(--card-bg);
-  border-radius: 12px;
-  padding: 1rem;
-  width: 30%;
-  text-align: center;
-}
-
-.stat-item h2 {
-  font-size: 1.5rem;
-  margin: 0 0 0.5rem 0;
-  font-weight: 600;
-}
-
-.stat-item p {
-  font-size: 0.75rem;
-  color: var(--text-secondary);
-  margin: 0;
-}
-
-.persona-section {
-  margin-bottom: 2rem;
-}
-
-.persona-section h2 {
-  font-size: 1.3rem;
-  margin: 0 0 0.25rem 0;
-}
-
-.subtitle {
-  font-size: 0.9rem;
-  color: var(--text-secondary);
-  margin: 0 0 1.5rem 0;
-  font-style: italic;
-}
-
-.avatar-grid {
-  display: flex;
-  justify-content: space-between;
-  margin-bottom: 1.5rem;
-}
-
-.avatar-item {
+.avatar-container {
   background-color: var(--card-bg);
   border-radius: 16px;
-  width: 30%;
-  aspect-ratio: 1;
+  width: 120px;
+  height: 120px;
   overflow: hidden;
   display: flex;
   justify-content: center;
   align-items: center;
+  margin-bottom: 1rem;
 }
 
-.avatar-item.selected {
-  border: 2px solid var(--accent-green);
-}
-
-.avatar-item img {
+.selected-avatar {
   width: 80%;
   height: 80%;
   object-fit: contain;
 }
 
-.create-button {
+.profile-name {
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin: 0.5rem 0;
+}
+
+.profile-details {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+}
+
+.detail-item {
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+  margin: 0;
+}
+
+.action-buttons {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+.change-button,
+.confirm-button {
+  flex: 1;
   background-color: var(--accent-pink);
   color: white;
   border: none;
   border-radius: 50px;
   padding: 0.75rem 0;
-  width: 100%;
   font-size: 1rem;
   font-weight: 600;
   cursor: pointer;

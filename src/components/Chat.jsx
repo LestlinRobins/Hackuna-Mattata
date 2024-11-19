@@ -296,7 +296,7 @@ const Chat = () => {
 
       const interval = setInterval(() => {
         refreshMessages();
-      }, 5000); // Adjust the interval time as needed
+      }, 1000); // Adjust the interval time as needed
 
       return () => clearInterval(interval); // Cleanup on unmount
     }

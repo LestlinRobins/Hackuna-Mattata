@@ -1,6 +1,6 @@
 /* File: src/App.css */
 @import url("https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Work+Sans:wght@300;400;500;600&display=swap");
-
+@import url("https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&display=swap");
 :root {
   --primary-bg: #0f0f0f;
   --secondary-bg: #1a1a1a;
@@ -31,7 +31,7 @@ h3,
 h4,
 h5,
 h6 {
-  font-family: "Space Mono", monospace;
+  font-family: "DM Sans";
   letter-spacing: -0.5px;
 }
 
