@@ -94,7 +94,30 @@
   margin-left: 40px;
   border-radius: 18px 18px 18px 5px;
 }
+.message-menu {
+  display: flex;
+  flex-direction: row;
+  border-radius: 20px;
+  position: absolute;
+  top: -25px;
+  z-index: 2;
+  background-color: #3333336f;
+  backdrop-filter: blur(15px);
+  height: 4vh;
+  align-items: center;
+  box-shadow: 2px 5px 10px 1px rgba(0, 0, 0, 0.53);
+}
 
+.message-wrapper:not(.own) .message-menu {
+  left: 10vw;
+}
+.message-menu-button {
+  border-radius: 0%;
+  width: max-content;
+  height: max-content;
+  padding: 10px;
+  background-color: transparent;
+}
 .message-footer {
   display: flex;
   margin-top: 4px;

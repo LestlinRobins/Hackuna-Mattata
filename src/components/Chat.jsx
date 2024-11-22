@@ -6,6 +6,7 @@ import {
   FiCornerUpLeft,
   FiX,
   FiArrowUp,
+  FiTrash,
 } from "react-icons/fi";
 import "../styles/Chat.css";
 import { supabase } from "../supabase";
@@ -25,7 +26,8 @@ const Chat = () => {
 
   const [activeReply, setActiveReply] = useState(null);
   const [replyPreview, setReplyPreview] = useState(null);
-
+  const [showMenu, setShowMenu] = useState(false);
+  const [activeMessageId, setActiveMessageId] = useState(null);
   const [debugInfo, setDebugInfo] = useState({
     status: "Idle",
     lastEvent: null,
@@ -293,7 +295,15 @@ const Chat = () => {
   const refreshMessages = () => {
     fetchMessages();
   };
-
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (!event.target.closest(".message")) {
+        setActiveMessageId(null);
+      }
+    };
+    document.addEventListener("click", handleClickOutside);
+    return () => document.removeEventListener("click", handleClickOutside);
+  }, []);
   // Render ID selection screen
   if (!inChatMode) {
     return (
@@ -374,7 +384,7 @@ const Chat = () => {
           messages.map((message) => (
             <div
               key={message.id}
-              id={`message-${message.id}`} // Add this ID
+              id={`message-${message.id}`} // Unique ID for each message
               className={`message-wrapper ${
                 message.user_id === currentUser.id ? "own" : ""
               }`}
@@ -385,6 +395,7 @@ const Chat = () => {
                   {getInitials(message.user_id)}
                 </div>
               )}
+
               {message.reply_to && (
                 <div className="reply-indicator">
                   Replying to:{" "}
@@ -392,16 +403,39 @@ const Chat = () => {
                     "Original message deleted"}
                 </div>
               )}
+
+              {/* Show menu only for the clicked message */}
+              {activeMessageId === message.id && (
+                <div className="message-menu">
+                  {activeMessageId === message.id &&
+                    message.user_id === currentUser.id && (
+                      <button
+                        className="message-menu-button"
+                        onClick={() => deleteMessage(message.id)}
+                      >
+                        <FiTrash />
+                      </button>
+                    )}
+                  <button
+                    className="message-menu-button"
+                    onClick={() => startReply(message)}
+                  >
+                    <FiCornerUpLeft />
+                  </button>
+                </div>
+              )}
+
               <div className="message-content">
                 <div
                   className={`message ${
                     message.user_id === currentUser.id ? "sent" : "received"
                   }`}
-                  onDoubleClick={() =>
-                    message.user_id === currentUser.id &&
-                    deleteMessage(message.id)
-                  }
-                  onClick={() => startReply(message)}
+                  onClick={(e) => {
+                    e.stopPropagation(); // Prevent click bubbling
+                    setActiveMessageId(
+                      activeMessageId === message.id ? null : message.id
+                    ); // Toggle menu
+                  }}
                 >
                   {message.content}
                 </div>
