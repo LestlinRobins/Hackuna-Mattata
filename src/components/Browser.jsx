@@ -1,5 +1,4 @@
 import React, { useState, useEffect, useRef } from "react";
-import "../styles/Browser.css";
 
 const Browser = () => {
   const [url, setUrl] = useState("");
@@ -34,7 +33,9 @@ const Browser = () => {
 
   // Handle URL submission
   const handleSubmit = (e) => {
-    e.preventDefault();
+    if (e && e.preventDefault) {
+      e.preventDefault();
+    }
 
     if (!url) {
       setErrorMessage("Please enter a URL");
@@ -131,88 +132,79 @@ const Browser = () => {
     );
   };
 
+  const renderTrendingItem = (title, subtitle) => (
+    <div style={styles.trendingItem}>
+      <h4 style={styles.trendingTitle}>{title}</h4>
+      <p style={styles.trendingSubtitle}>{subtitle}</p>
+    </div>
+  );
+
   return (
-    <div className="browser">
-      <div className="browser-header">
-        <h1>Private Tor Browser</h1>
-        <div className="tor-status">
-          <div className={`status-indicator ${torStatus}`}></div>
-          <span>Tor: {torStatus}</span>
-          {torStatus === "disconnected" ? (
-            <button onClick={connectToTor} className="tor-button connect">
-              Connect to Tor
-            </button>
-          ) : (
-            <button
-              onClick={disconnectFromTor}
-              className="tor-button disconnect"
-            >
-              Disconnect
-            </button>
-          )}
-          <button
-            onClick={changeCircuit}
-            className="tor-button"
-            disabled={torStatus !== "connected"}
-          >
-            New Circuit
-          </button>
-        </div>
+    <div style={styles.browser}>
+      {/* Header */}
+      <div style={styles.header}>
+        <button
+          onClick={
+            torStatus === "disconnected" ? connectToTor : disconnectFromTor
+          }
+          style={{
+            ...styles.torButton,
+            backgroundColor: torStatus === "connected" ? "#2ecc71" : "#e74c3c",
+          }}
+        >
+          {torStatus === "connected" ? "✓" : "⨯"}
+        </button>
+        <h2 style={styles.headerTitle}>Browser</h2>
+        <button style={styles.addButton}>+</button>
       </div>
 
-      <div className="browser-toolbar">
-        <form onSubmit={handleSubmit} className="url-form">
-          <input
-            type="text"
-            className="url-input"
-            value={url}
-            onChange={(e) => setUrl(e.target.value)}
-            placeholder="Enter .onion or regular URL"
-            disabled={torStatus !== "connected"}
-          />
-          <button
-            type="submit"
-            className="navigate-button"
-            disabled={torStatus !== "connected"}
-          >
-            Go
-          </button>
+      {/* Search Bar */}
+      <div style={styles.searchBarContainer}>
+        <form onSubmit={handleSubmit} style={styles.urlForm}>
+          <div style={styles.searchBar}>
+            <span style={styles.searchIcon}>🔍</span>
+            <input
+              type="text"
+              style={styles.searchInput}
+              value={url}
+              onChange={(e) => setUrl(e.target.value)}
+              placeholder="Search Here or Type URL"
+              disabled={torStatus !== "connected"}
+            />
+          </div>
         </form>
-        <div className="browser-actions">
-          <button onClick={addBookmark} disabled={!currentUrl}>
-            Bookmark
-          </button>
-          <button onClick={clearData}>Clear Data</button>
-        </div>
       </div>
 
-      {errorMessage && <div className="error-message">{errorMessage}</div>}
+      {errorMessage && <div style={styles.errorMessage}>{errorMessage}</div>}
 
-      <div className="browser-content">
+      {/* Browser Content */}
+      <div style={styles.browserContent}>
         {isLoading ? (
-          <div className="loading-screen">
+          <div style={styles.loadingScreen}>
             <p>Loading via Tor network...</p>
-            <div className="loading-spinner"></div>
+            <div style={styles.loadingSpinner}></div>
             <p>Your connection is encrypted through multiple relays</p>
           </div>
         ) : currentUrl ? (
-          <div className="webpage-container">
-            <div className="webpage-header">
+          <div style={styles.webpageContainer}>
+            <div style={styles.webpageHeader}>
               <p>Connected to: {currentUrl}</p>
-              <p className="security-notice">End-to-end encrypted connection</p>
+              <p style={styles.securityNotice}>
+                End-to-end encrypted connection
+              </p>
             </div>
-            <div className="iframe-container">
+            <div style={styles.iframeContainer}>
               <iframe
                 ref={iframeRef}
                 src={currentUrl}
-                className="webpage-iframe"
+                style={styles.webpageIframe}
                 title="Tor Browser Content"
                 sandbox="allow-same-origin allow-scripts allow-forms"
                 onLoad={handleIframeLoad}
                 onError={handleIframeError}
               />
-              <div className="iframe-overlay">
-                <p className="overlay-notice">
+              <div style={styles.iframeOverlay}>
+                <p style={styles.overlayNotice}>
                   Note: In a real Tor browser implementation, traffic would be
                   routed through the Tor network. This is a simulation and the
                   iframe may not load certain sites due to browser security
@@ -222,45 +214,196 @@ const Browser = () => {
             </div>
           </div>
         ) : (
-          <div className="start-page">
-            <h2>Private Browsing with Tor</h2>
-            <p className="placeholder-text">
-              Browse without being tracked. Your connection is routed through
-              multiple relays to mask your identity and location.
-            </p>
-            <div className="privacy-features">
-              <h3>Privacy Features:</h3>
-              <ul>
-                <li>Connection routed through multiple encrypted relays</li>
-                <li>Access to .onion sites on the dark web</li>
-                <li>No browsing history stored after session</li>
-                <li>Protection against tracking and fingerprinting</li>
-              </ul>
-            </div>
+          <div style={styles.startPage}>
+            <h3 style={styles.trendingHeader}>Trending</h3>
+
+            {renderTrendingItem(
+              "Apoorv 2025: IIIT Kottayam's Grand Techno-Cultural Fest Returns!",
+              "Apoorv is back with a fusion of technology, culture, and innovation!"
+            )}
+
+            {renderTrendingItem(
+              "Hack, Dance & Celebrate: Apoorv 2025 to Host Thrilling Events!",
+              "IIIT Kottayam's Apoorv 2025 promises an exciting lineup, including ApoorvCTF 3.0"
+            )}
+
+            {renderTrendingItem(
+              "The Countdown Begins: Apoorv 2025 to Light Up IIIT Kottayam!",
+              "With just weeks to go, anticipation builds for Apoorv 2025, IIIT Kottayam's flagship fest!"
+            )}
           </div>
         )}
       </div>
-
-      {bookmarks.length > 0 && (
-        <div className="browser-sidebar">
-          <h3>Bookmarks</h3>
-          <ul>
-            {bookmarks.map((bookmark, index) => (
-              <li
-                key={index}
-                onClick={() => {
-                  setUrl(bookmark);
-                  handleSubmit({ preventDefault: () => {} });
-                }}
-              >
-                {bookmark}
-              </li>
-            ))}
-          </ul>
-        </div>
-      )}
     </div>
   );
+};
+
+// Styles
+const styles = {
+  browser: {
+    display: "flex",
+    flexDirection: "column",
+    height: "100vh",
+    backgroundColor: "#121212",
+    color: "white",
+    fontFamily: "Arial, sans-serif",
+  },
+  header: {
+    display: "flex",
+    justifyContent: "space-between",
+    alignItems: "center",
+    padding: "15px",
+    borderBottom: "1px solid #333",
+  },
+  headerTitle: {
+    margin: 0,
+    fontSize: "18px",
+    fontWeight: "bold",
+  },
+  torButton: {
+    width: "36px",
+    height: "36px",
+    borderRadius: "50%",
+    border: "none",
+    color: "white",
+    fontSize: "18px",
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    cursor: "pointer",
+  },
+  addButton: {
+    width: "36px",
+    height: "36px",
+    borderRadius: "50%",
+    border: "none",
+    backgroundColor: "#e91e63",
+    color: "white",
+    fontSize: "20px",
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    cursor: "pointer",
+  },
+  searchBarContainer: {
+    padding: "15px",
+  },
+  urlForm: {
+    width: "100%",
+  },
+  searchBar: {
+    display: "flex",
+    alignItems: "center",
+    backgroundColor: "#333",
+    borderRadius: "30px",
+    padding: "8px 15px",
+  },
+  searchIcon: {
+    marginRight: "10px",
+    color: "#888",
+  },
+  searchInput: {
+    flex: 1,
+    background: "transparent",
+    border: "none",
+    color: "white",
+    fontSize: "15px",
+    outline: "none",
+  },
+  errorMessage: {
+    padding: "10px 15px",
+    backgroundColor: "#ff5252",
+    color: "white",
+    margin: "0 15px",
+    borderRadius: "5px",
+    fontSize: "14px",
+  },
+  browserContent: {
+    flex: 1,
+    overflow: "auto",
+    padding: "0 15px",
+  },
+  loadingScreen: {
+    display: "flex",
+    flexDirection: "column",
+    justifyContent: "center",
+    alignItems: "center",
+    height: "100%",
+    textAlign: "center",
+  },
+  loadingSpinner: {
+    border: "3px solid #f3f3f3",
+    borderTop: "3px solid #3498db",
+    borderRadius: "50%",
+    width: "30px",
+    height: "30px",
+    animation: "spin 2s linear infinite",
+    margin: "20px 0",
+  },
+  webpageContainer: {
+    height: "100%",
+    display: "flex",
+    flexDirection: "column",
+  },
+  webpageHeader: {
+    padding: "10px 0",
+    fontSize: "14px",
+  },
+  securityNotice: {
+    color: "#4CAF50",
+    fontSize: "12px",
+    margin: "5px 0",
+  },
+  iframeContainer: {
+    position: "relative",
+    flex: 1,
+    backgroundColor: "#fff",
+    borderRadius: "6px",
+    overflow: "hidden",
+  },
+  webpageIframe: {
+    width: "100%",
+    height: "100%",
+    border: "none",
+  },
+  iframeOverlay: {
+    position: "absolute",
+    bottom: 0,
+    left: 0,
+    right: 0,
+    backgroundColor: "rgba(0,0,0,0.7)",
+    padding: "10px",
+  },
+  overlayNotice: {
+    margin: 0,
+    fontSize: "12px",
+    color: "#fff",
+  },
+  startPage: {
+    padding: "10px 0",
+  },
+  trendingHeader: {
+    marginBottom: "15px",
+    fontSize: "16px",
+    fontWeight: "normal",
+  },
+  trendingItem: {
+    backgroundColor: "#1e1e1e",
+    borderRadius: "8px",
+    padding: "15px",
+    marginBottom: "15px",
+  },
+  trendingTitle: {
+    margin: "0 0 8px 0",
+    fontSize: "14px",
+    fontWeight: "bold",
+  },
+  trendingSubtitle: {
+    margin: 0,
+    fontSize: "12px",
+    color: "#aaa",
+    lineHeight: "1.4",
+  },
 };
 
 export default Browser;
