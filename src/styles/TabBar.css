@@ -18,7 +18,7 @@
   justify-content: center;
   background: none;
   border: none;
-  color: var(--text-secondary);
+  color: #ff3366;
   font-size: 0.75rem;
   font-weight: 500;
   cursor: pointer;
@@ -32,7 +32,7 @@
 }
 
 .tab-button.active {
-  color: var(--accent-color);
+  color: #ff3366;
 }
 
 .tab-icon {
