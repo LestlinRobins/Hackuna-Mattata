@@ -91,6 +91,7 @@ body {
 .category-tab.active {
   color: #fff;
   border-bottom: 2px solid #ff3366;
+  outline: none;
 }
 
 .topics-container {

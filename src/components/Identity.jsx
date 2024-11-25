@@ -21,7 +21,11 @@ const Identity = ({ onBack, onConfirm }) => {
 
       <div className="profile-container">
         <div className="avatar-container">
-          <img src="/avatar2.png" alt="Avatar" className="selected-avatar" />
+          <img
+            src="https://drive.google.com/thumbnail?id=1B9nuGmEG19nbdq2Sm0ygifbksomW4tm8"
+            alt="Avatar"
+            className="selected-avatar"
+          />
         </div>
 
         <h2 className="profile-name">{name}</h2>

@@ -61,13 +61,22 @@ const Home = () => {
 
         <div className="avatar-grid">
           <div className="avatar-item">
-            <img src="/avatar1.png" alt="Avatar 1" />
+            <img
+              src="https://drive.google.com/thumbnail?id=1PZT1Cp52D7cMhvishy1EAiFFAJLEEpYr"
+              alt="Avatar 1"
+            />
           </div>
           <div className="avatar-item selected">
-            <img src="/avatar2.png" alt="Avatar 2" />
+            <img
+              src="https://drive.google.com/thumbnail?id=13U3ngsvMSIZka-F_QpwFXlShBFx1Vztc"
+              alt="Avatar 2"
+            />
           </div>
           <div className="avatar-item">
-            <img src="/avatar3.png" alt="Avatar 3" />
+            <img
+              src="https://drive.google.com/thumbnail?id=1B9nuGmEG19nbdq2Sm0ygifbksomW4tm8"
+              alt="Avatar 3"
+            />
           </div>
         </div>
 

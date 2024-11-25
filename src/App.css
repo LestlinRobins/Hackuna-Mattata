@@ -85,6 +85,8 @@ h6 {
 
 .tab-button.active {
   color: var(--accent-color);
+  border: none;
+  outline: none;
 }
 
 .tab-icon {
