@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
-import "../styles/Browser.css";
+import { Switch } from "@mui/material";
 
 const Browser = () => {
   const [url, setUrl] = useState("");
@@ -34,7 +34,9 @@ const Browser = () => {
 
   // Handle URL submission
   const handleSubmit = (e) => {
-    e.preventDefault();
+    if (e && e.preventDefault) {
+      e.preventDefault();
+    }
 
     if (!url) {
       setErrorMessage("Please enter a URL");
@@ -131,88 +133,80 @@ const Browser = () => {
     );
   };
 
+  const renderTrendingItem = (title, subtitle) => (
+    <div style={styles.trendingItem}>
+      <h4 style={styles.trendingTitle}>{title}</h4>
+      <p style={styles.trendingSubtitle}>{subtitle}</p>
+    </div>
+  );
+
   return (
-    <div className="browser">
-      <div className="browser-header">
-        <h1>Private Tor Browser</h1>
-        <div className="tor-status">
-          <div className={`status-indicator ${torStatus}`}></div>
-          <span>Tor: {torStatus}</span>
-          {torStatus === "disconnected" ? (
-            <button onClick={connectToTor} className="tor-button connect">
-              Connect to Tor
-            </button>
-          ) : (
-            <button
-              onClick={disconnectFromTor}
-              className="tor-button disconnect"
-            >
-              Disconnect
-            </button>
-          )}
-          <button
-            onClick={changeCircuit}
-            className="tor-button"
-            disabled={torStatus !== "connected"}
-          >
-            New Circuit
-          </button>
-        </div>
+    <div style={styles.browser}>
+      <div style={styles.header}>
+        <Switch
+          checked={torStatus === "connected"}
+          onChange={
+            torStatus === "disconnected" ? connectToTor : disconnectFromTor
+          }
+          color="primary"
+          sx={{
+            "& .MuiSwitch-track": {
+              backgroundColor:
+                torStatus === "connected" ? "#4caf50" : "#f44336",
+            },
+          }}
+        />
+        <h2 style={styles.headerTitle}>Browser</h2>
+        <button style={styles.addButton}>+</button>
       </div>
 
-      <div className="browser-toolbar">
-        <form onSubmit={handleSubmit} className="url-form">
-          <input
-            type="text"
-            className="url-input"
-            value={url}
-            onChange={(e) => setUrl(e.target.value)}
-            placeholder="Enter .onion or regular URL"
-            disabled={torStatus !== "connected"}
-          />
-          <button
-            type="submit"
-            className="navigate-button"
-            disabled={torStatus !== "connected"}
-          >
-            Go
-          </button>
+      {/* Search Bar */}
+      <div style={styles.searchBarContainer}>
+        <form onSubmit={handleSubmit} style={styles.urlForm}>
+          <div style={styles.searchBar}>
+            <span style={styles.searchIcon}>🔍</span>
+            <input
+              type="text"
+              style={styles.searchInput}
+              value={url}
+              onChange={(e) => setUrl(e.target.value)}
+              placeholder="Search Here or Type URL"
+              disabled={torStatus !== "connected"}
+            />
+          </div>
         </form>
-        <div className="browser-actions">
-          <button onClick={addBookmark} disabled={!currentUrl}>
-            Bookmark
-          </button>
-          <button onClick={clearData}>Clear Data</button>
-        </div>
       </div>
 
-      {errorMessage && <div className="error-message">{errorMessage}</div>}
+      {errorMessage && <div style={styles.errorMessage}>{errorMessage}</div>}
 
-      <div className="browser-content">
+      {/* Browser Content */}
+      <div style={styles.browserContent}>
         {isLoading ? (
-          <div className="loading-screen">
+          <div style={styles.loadingScreen}>
             <p>Loading via Tor network...</p>
-            <div className="loading-spinner"></div>
+            <div style={styles.loadingSpinner}></div>
             <p>Your connection is encrypted through multiple relays</p>
           </div>
         ) : currentUrl ? (
-          <div className="webpage-container">
-            <div className="webpage-header">
+          <div style={styles.webpageContainer}>
+            <div style={styles.webpageHeader}>
               <p>Connected to: {currentUrl}</p>
-              <p className="security-notice">End-to-end encrypted connection</p>
+              <p style={styles.securityNotice}>
+                End-to-end encrypted connection
+              </p>
             </div>
-            <div className="iframe-container">
+            <div style={styles.iframeContainer}>
               <iframe
                 ref={iframeRef}
                 src={currentUrl}
-                className="webpage-iframe"
+                style={styles.webpageIframe}
                 title="Tor Browser Content"
                 sandbox="allow-same-origin allow-scripts allow-forms"
                 onLoad={handleIframeLoad}
                 onError={handleIframeError}
               />
-              <div className="iframe-overlay">
-                <p className="overlay-notice">
+              <div style={styles.iframeOverlay}>
+                <p style={styles.overlayNotice}>
                   Note: In a real Tor browser implementation, traffic would be
                   routed through the Tor network. This is a simulation and the
                   iframe may not load certain sites due to browser security
@@ -222,43 +216,26 @@ const Browser = () => {
             </div>
           </div>
         ) : (
-          <div className="start-page">
-            <h2>Private Browsing with Tor</h2>
-            <p className="placeholder-text">
-              Browse without being tracked. Your connection is routed through
-              multiple relays to mask your identity and location.
-            </p>
-            <div className="privacy-features">
-              <h3>Privacy Features:</h3>
-              <ul>
-                <li>Connection routed through multiple encrypted relays</li>
-                <li>Access to .onion sites on the dark web</li>
-                <li>No browsing history stored after session</li>
-                <li>Protection against tracking and fingerprinting</li>
-              </ul>
-            </div>
+          <div style={styles.startPage}>
+            <h3 style={styles.trendingHeader}>Trending</h3>
+
+            {renderTrendingItem(
+              "Apoorv 2025: IIIT Kottayam's Grand Techno-Cultural Fest Returns!",
+              "Apoorv is back with a fusion of technology, culture, and innovation!"
+            )}
+
+            {renderTrendingItem(
+              "Hack, Dance & Celebrate: Apoorv 2025 to Host Thrilling Events!",
+              "IIIT Kottayam's Apoorv 2025 promises an exciting lineup, including ApoorvCTF 3.0"
+            )}
+
+            {renderTrendingItem(
+              "The Countdown Begins: Apoorv 2025 to Light Up IIIT Kottayam!",
+              "With just weeks to go, anticipation builds for Apoorv 2025, IIIT Kottayam's flagship fest!"
+            )}
           </div>
         )}
       </div>
-
-      {bookmarks.length > 0 && (
-        <div className="browser-sidebar">
-          <h3>Bookmarks</h3>
-          <ul>
-            {bookmarks.map((bookmark, index) => (
-              <li
-                key={index}
-                onClick={() => {
-                  setUrl(bookmark);
-                  handleSubmit({ preventDefault: () => {} });
-                }}
-              >
-                {bookmark}
-              </li>
-            ))}
-          </ul>
-        </div>
-      )}
     </div>
   );
 };
@@ -271,7 +248,7 @@ const styles = {
     height: "100vh",
     backgroundColor: "#121212",
     color: "white",
-    fontFamily: "Arial, sans-serif",
+    fontFamily: "DM Sans, sans-serif",
   },
   header: {
     display: "flex",

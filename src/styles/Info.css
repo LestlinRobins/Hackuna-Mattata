@@ -1,131 +1,146 @@
-/* File: src/styles/Info.css */
-.info {
-  padding: 1.5rem 1rem;
+@import url("https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&display=swap");
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: "DM Sans", sans-serif;
+  background-color: #000;
+  color: #fff;
+}
+
+.info-container {
+  max-width: 100%;
+  min-height: 100vh;
   display: flex;
   flex-direction: column;
-  gap: 2rem;
+  background-color: #111;
 }
 
-.info h1 {
-  font-size: 1.75rem;
-  margin-bottom: 1rem;
+.info-header {
+  padding: 16px;
   text-align: center;
+  font-weight: 700;
+  border-bottom: 1px solid #333;
+}
+.info-header h1 {
+  font-size: 1.5rem;
+}
+.search-container {
+  padding: 16px;
 }
 
-.info-section {
-  background-color: var(--secondary-bg);
-  border-radius: 12px;
-  padding: 1.5rem;
-  margin-bottom: 1.5rem;
-}
-
-.info-section:last-child {
-  margin-bottom: 0;
-}
-
-.info-section h2 {
-  font-size: 1.25rem;
-  margin-bottom: 1rem;
-  color: var(--accent-color);
-}
-
-.info-section p {
-  font-size: 0.9rem;
-  line-height: 1.6;
-  color: var(--text-secondary);
-  margin-bottom: 1rem;
-}
-
-.info-section p:last-child {
-  margin-bottom: 0;
-}
-
-.feature-list {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-}
-
-.feature-list li {
+.search-input {
   position: relative;
-  padding-left: 1.5rem;
-  margin-bottom: 0.75rem;
-  font-size: 0.9rem;
-  color: var(--text-secondary);
-}
-
-.feature-list li:last-child {
-  margin-bottom: 0;
-}
-
-.feature-list li::before {
-  content: "→";
-  position: absolute;
-  left: 0;
-  color: var(--accent-color);
-}
-
-.info-section a {
-  color: var(--accent-color);
-  text-decoration: none;
-  transition: opacity 0.2s ease;
-}
-
-.info-section a:hover {
-  opacity: 0.8;
-}
-
-.version-info {
-  text-align: center;
-  font-size: 0.75rem;
-  color: var(--text-secondary);
-  margin-top: 2rem;
-}
-
-.privacy-policy {
-  margin-top: 1rem;
-}
-
-.privacy-policy h3 {
-  font-size: 1rem;
-  margin-bottom: 0.75rem;
-}
-
-.privacy-policy p {
-  font-size: 0.85rem;
-  margin-bottom: 0.75rem;
-}
-
-.accordion {
-  margin-top: 1rem;
-}
-
-.accordion-item {
-  background-color: rgba(255, 255, 255, 0.05);
-  border-radius: 8px;
-  margin-bottom: 0.75rem;
-  overflow: hidden;
-}
-
-.accordion-header {
-  padding: 1rem;
-  cursor: pointer;
-  font-weight: 600;
-  font-size: 0.9rem;
+  width: 100%;
+  background-color: #222;
+  border-radius: 30px;
+  padding: 12px 20px;
   display: flex;
-  justify-content: space-between;
   align-items: center;
 }
 
-.accordion-content {
-  padding: 0 1rem 1rem;
-  font-size: 0.85rem;
-  color: var(--text-secondary);
-  line-height: 1.5;
+.search-icon {
+  width: 20px;
+  height: 20px;
+  margin-right: 10px;
 }
 
-.contact-info {
+.search-input input {
+  background: transparent;
+  border: none;
+  outline: none;
+  color: #949494;
+  font-size: 16px;
+  width: 100%;
+  font-family: "DM Sans", sans-serif;
+}
+
+.search-input input::placeholder {
+  color: #6f6f6f;
+  opacity: 0.7;
+}
+
+.category-tabs {
   display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
+  overflow-x: scroll;
+  border-bottom: 1px solid #333;
+  scrollbar-width: none; /* Hide scrollbar for Firefox */
+}
+
+.category-tabs::-webkit-scrollbar {
+  display: none; /* Hide scrollbar for Chrome/Safari */
+}
+
+.category-tab {
+  padding: 10px 20px;
+  background: transparent;
+  border: none;
+  color: #888;
+  font-size: 14px;
+  white-space: nowrap;
+  cursor: pointer;
+  font-family: "DM Sans", sans-serif;
+}
+
+.category-tab.active {
+  color: #fff;
+  border-bottom: 2px solid #ff3366;
+  border-radius: 0px;
+  outline: none;
+}
+
+.topics-container {
+  flex: 1;
+  padding: 10px;
+  overflow-y: auto;
+}
+
+.topic-card {
+  background-color: #222;
+  border-radius: 10px;
+  padding: 16px;
+  margin-bottom: 10px;
+}
+
+.topic-card h3 {
+  font-size: 16px;
+  margin-bottom: 4px;
+  color: #fff;
+}
+
+.topic-card p {
+  font-size: 14px;
+  color: #888;
+}
+
+.bottom-navbar {
+  display: flex;
+  justify-content: space-around;
+  padding: 12px;
+  background-color: #222;
+  border-top-left-radius: 20px;
+  border-top-right-radius: 20px;
+}
+
+.bottom-navbar button {
+  background: none;
+  border: none;
+  color: #888;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+}
+
+.bottom-navbar button svg {
+  width: 24px;
+  height: 24px;
+}
+
+.bottom-navbar button:focus {
+  outline: none;
 }
