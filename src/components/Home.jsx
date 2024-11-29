@@ -1,7 +1,7 @@
 // File: src/components/Home.jsx
 import { useState } from "react";
 import "../styles/Home.css";
-import Identity from "./Identity";
+import FakeIdentity from "./Identity";
 
 const Home = () => {
   const [showIdentity, setShowIdentity] = useState(false);
@@ -22,7 +22,9 @@ const Home = () => {
 
   // Render the Identity component if showIdentity is true
   if (showIdentity) {
-    return <Identity onBack={handleBackClick} onConfirm={handleConfirmClick} />;
+    return (
+      <FakeIdentity onBack={handleBackClick} onConfirm={handleConfirmClick} />
+    );
   }
 
   // Otherwise render the Home component
