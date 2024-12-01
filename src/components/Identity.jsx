@@ -11,7 +11,7 @@ import {
   Avatar,
 } from "@mui/material";
 import PhoneIcon from "@mui/icons-material/Phone";
-import { supabase } from "../Supabase";
+import { supabase } from "../supabase";
 
 /**
  * FakeIdentity Component
