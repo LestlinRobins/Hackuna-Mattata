@@ -138,7 +138,24 @@ body {
   text-align: center;
   cursor: pointer;
 }
-
+.current-person {
+  display: flex;
+  flex-direction: column;
+}
+.current-person img {
+  align-self: center;
+  width: 30vw;
+  margin-bottom: 3vh;
+}
+.current-person-data-placeholder {
+  font-weight: 100;
+  color: gray;
+  display: flex;
+}
+.current-person-data {
+  color: white;
+  margin-left: 10px;
+}
 .bottom-nav {
   display: flex;
   justify-content: space-between;
@@ -160,12 +177,12 @@ body {
 }
 .avatar-item.selected {
   border: 2px solid green;
-  padding: 5px; 
-  transition: border 0.3s ease; 
+  padding: 5px;
+  transition: border 0.3s ease;
 }
 
 .avatar-item img {
   width: 100%;
   height: auto;
-  border-radius: 8px; 
+  border-radius: 8px;
 }
