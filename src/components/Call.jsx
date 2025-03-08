@@ -2,12 +2,13 @@
 import { useState } from "react";
 import { FiPhone, FiVideo, FiMic, FiMicOff, FiVideoOff } from "react-icons/fi";
 import "../styles/Call.css";
+import VideoRoom from "./VideoRoom";
 
 const Call = () => {
   const [isInCall, setIsInCall] = useState(false);
   const [isMuted, setIsMuted] = useState(false);
   const [isVideoOn, setIsVideoOn] = useState(true);
-
+  const [isjoined, setisjoined]=useState(false);
   const [recentCalls] = useState([
     { id: "call1", name: "AN1234", time: "10:45 AM", missed: false },
     { id: "call2", name: "XY5678", time: "9:22 AM", missed: true },
@@ -30,7 +31,7 @@ const Call = () => {
     <div className="call">
       <h1>Secure Calls</h1>
 
-      {!isInCall ? (
+      {(!isInCall && !isjoined) && (
         <>
           <div className="call-section">
             <h2>Recent</h2>
@@ -67,7 +68,7 @@ const Call = () => {
                 className="call-button video"
                 onClick={() => {
                   setIsVideoOn(true);
-                  toggleCall();
+                  setisjoined(true);
                 }}
               >
                 <FiVideo />
@@ -75,7 +76,8 @@ const Call = () => {
             </div>
           </div>
         </>
-      ) : (
+      )}
+      {isInCall && (
         <div className="active-call">
           <div className="caller-info">
             <div className="large-avatar">{isVideoOn ? "Video" : "AN"}</div>
@@ -93,14 +95,14 @@ const Call = () => {
             <button className="control-button end" onClick={toggleCall}>
               <FiPhone />
             </button>
-            <button
-              className={`control-button ${!isVideoOn ? "active" : ""}`}
-              onClick={toggleVideo}
-            >
-              {isVideoOn ? <FiVideo /> : <FiVideoOff />}
-            </button>
           </div>
         </div>
+      )}
+      {isjoined && (
+        <>
+          <VideoRoom />
+        </>
+        
       )}
     </div>
   );
