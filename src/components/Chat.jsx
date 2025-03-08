@@ -1,7 +1,5 @@
-// File: src/components/Chat.jsx
 import { useState, useEffect, useRef } from "react";
-import { FiSend, FiPlus } from "react-icons/fi";
-import { createClient } from "@supabase/supabase-js";
+import { FiSend, FiPlus, FiArrowLeft } from "react-icons/fi";
 import "../styles/Chat.css";
 import { supabase } from "../supabase";
 
@@ -12,7 +10,15 @@ const Chat = () => {
     id: "user123",
     name: "Aurora",
   });
+  const [chatPartnerId, setChatPartnerId] = useState("");
+  const [chatPartnerInput, setChatPartnerInput] = useState("");
+  const [inChatMode, setInChatMode] = useState(false);
   const messagesEndRef = useRef(null);
+  const subscriptionRef = useRef(null);
+  const [debugInfo, setDebugInfo] = useState({
+    status: "Idle",
+    lastEvent: null,
+  });
 
   // Generate placeholder for user avatar
   const getInitials = (userId) => {
@@ -24,40 +30,193 @@ const Chat = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   };
 
+  // Setup realtime subscription
+  const setupRealtimeSubscription = async () => {
+    try {
+      // Clean up any existing subscription first
+      if (subscriptionRef.current) {
+        await supabase.removeChannel(subscriptionRef.current);
+        subscriptionRef.current = null;
+      }
+
+      setDebugInfo({ status: "Setting up channel", lastEvent: null });
+
+      // Create a unique channel name for this conversation
+      const channelName = `messages_${Date.now()}`;
+
+      // Create a new subscription with specific filters
+      const channel = supabase
+        .channel(channelName)
+        .on(
+          "postgres_changes",
+          {
+            event: "INSERT",
+            schema: "public",
+            table: "messages",
+            filter: `user_id=eq.${currentUser.id},recipient_id=eq.${chatPartnerId}`,
+          },
+          (payload) => {
+            console.log("Received message from current user:", payload);
+            setDebugInfo((prev) => ({
+              status: "Received message from current user",
+              lastEvent: new Date().toISOString(),
+            }));
+            setMessages((prev) => [...prev, payload.new]);
+          }
+        )
+        .on(
+          "postgres_changes",
+          {
+            event: "INSERT",
+            schema: "public",
+            table: "messages",
+            filter: `user_id=eq.${chatPartnerId},recipient_id=eq.${currentUser.id}`,
+          },
+          (payload) => {
+            console.log("Received message from chat partner:", payload);
+            setDebugInfo((prev) => ({
+              status: "Received message from chat partner",
+              lastEvent: new Date().toISOString(),
+            }));
+            setMessages((prev) => [...prev, payload.new]);
+          }
+        );
+
+      // Subscribe to the channel
+      const { error } = await channel.subscribe((status) => {
+        console.log("Subscription status:", status);
+        setDebugInfo((prev) => ({
+          ...prev,
+          status: `Subscription: ${status}`,
+        }));
+      });
+
+      if (error) {
+        console.error("Subscription error:", error);
+        setDebugInfo((prev) => ({
+          ...prev,
+          status: `Subscription error: ${error.message}`,
+        }));
+        return;
+      }
+
+      subscriptionRef.current = channel;
+
+      console.log(
+        "Subscription set up successfully for chat between",
+        currentUser.id,
+        "and",
+        chatPartnerId
+      );
+      setDebugInfo((prev) => ({ ...prev, status: "Subscription active" }));
+    } catch (err) {
+      console.error("Error setting up subscription:", err);
+      setDebugInfo((prev) => ({
+        ...prev,
+        status: `Setup error: ${err.message}`,
+      }));
+    }
+  };
+
   useEffect(() => {
-    // Initial fetch of messages
-    fetchMessages();
+    if (inChatMode && chatPartnerId) {
+      // Initial fetch of messages
+      fetchMessages();
 
-    // Subscribe to new messages
-    const subscription = supabase
-      .channel("messages")
-      .on("INSERT", { event: "messages", schema: "public" }, (payload) => {
-        setMessages((prevMessages) => [...prevMessages, payload.new]);
-      })
-      .subscribe();
+      // Set up real-time subscription
+      setupRealtimeSubscription();
 
-    return () => {
-      supabase.removeChannel(subscription);
-    };
-  }, []);
+      // Cleanup function
+      return () => {
+        if (subscriptionRef.current) {
+          console.log("Cleaning up subscription");
+          supabase.removeChannel(subscriptionRef.current);
+          subscriptionRef.current = null;
+        }
+      };
+    }
+  }, [inChatMode, chatPartnerId, currentUser.id]);
 
   useEffect(() => {
     scrollToBottom();
   }, [messages]);
 
-  // Fetch messages from Supabase
+  // Fetch messages between current user and selected chat partner
   const fetchMessages = async () => {
     try {
+      console.log(
+        "Fetching messages between",
+        currentUser.id,
+        "and",
+        chatPartnerId
+      );
+      setDebugInfo((prev) => ({ ...prev, status: "Fetching messages" }));
+
+      // Properly formatted query with parameter binding
       const { data, error } = await supabase
         .from("messages")
         .select("*")
+        .or(`user_id.eq.${currentUser.id},user_id.eq.${chatPartnerId}`)
+        .or(
+          `recipient_id.eq.${currentUser.id},recipient_id.eq.${chatPartnerId}`
+        )
         .order("created_at", { ascending: true });
 
-      if (error) throw error;
-      if (data) setMessages(data);
+      if (error) {
+        throw error;
+      }
+
+      // Filter messages to only include those in this conversation
+      const conversationMessages = data.filter(
+        (msg) =>
+          (msg.user_id === currentUser.id &&
+            msg.recipient_id === chatPartnerId) ||
+          (msg.user_id === chatPartnerId && msg.recipient_id === currentUser.id)
+      );
+
+      console.log("Fetched messages:", conversationMessages.length);
+      setDebugInfo((prev) => ({
+        ...prev,
+        status: `Fetched ${conversationMessages.length} messages`,
+      }));
+
+      setMessages(conversationMessages);
     } catch (error) {
       console.error("Error fetching messages:", error);
+      setDebugInfo((prev) => ({
+        ...prev,
+        status: `Fetch error: ${error.message}`,
+      }));
+      setMessages([]);
     }
+  };
+
+  // Enter chat with specific user ID
+  const enterChat = (e) => {
+    e.preventDefault();
+    if (!chatPartnerInput.trim()) return;
+
+    setChatPartnerId(chatPartnerInput);
+    setInChatMode(true);
+    setMessages([]);
+    setDebugInfo({
+      status: "Entering chat",
+      lastEvent: new Date().toISOString(),
+    });
+  };
+
+  // Exit chat and return to ID input
+  const exitChat = () => {
+    // Clean up subscription before exiting
+    if (subscriptionRef.current) {
+      supabase.removeChannel(subscriptionRef.current);
+      subscriptionRef.current = null;
+    }
+
+    setInChatMode(false);
+    setChatPartnerId("");
+    setMessages([]);
+    setDebugInfo({ status: "Exited chat", lastEvent: null });
   };
 
   // Send a new message
@@ -65,20 +224,54 @@ const Chat = () => {
     e.preventDefault();
     if (!newMessage.trim()) return;
 
+    // Clear the input field immediately for better UX
+    const messageContent = newMessage;
+    setNewMessage("");
+    setDebugInfo((prev) => ({ ...prev, status: "Sending message" }));
+
+    // Generate a UUID for the message ID
+    const messageId = crypto.randomUUID
+      ? crypto.randomUUID()
+      : `local-${Date.now()}`;
+
     const newMsg = {
-      id: Date.now().toString(),
+      id: messageId, // Add an ID field
       user_id: currentUser.id,
-      content: newMessage,
+      recipient_id: chatPartnerId,
+      content: messageContent,
       created_at: new Date().toISOString(),
     };
 
     try {
-      const { error } = await supabase.from("messages").insert([newMsg]);
+      const { data, error } = await supabase
+        .from("messages")
+        .insert([newMsg])
+        .select();
 
       if (error) throw error;
-      setNewMessage("");
+
+      console.log("Message sent successfully:", data);
+      setDebugInfo((prev) => ({
+        ...prev,
+        status: "Message sent",
+        lastEvent: new Date().toISOString(),
+      }));
+
+      // Force update UI with the new message
+      if (data && data.length > 0) {
+        setMessages((prevMessages) => [...prevMessages, data[0]]);
+      } else {
+        // If no data returned, use our local message object
+        setMessages((prevMessages) => [...prevMessages, newMsg]);
+      }
     } catch (error) {
       console.error("Error sending message:", error);
+      setDebugInfo((prev) => ({
+        ...prev,
+        status: `Send error: ${error.message}`,
+      }));
+      // Restore the message if sending failed
+      setNewMessage(messageContent);
     }
   };
 
@@ -96,6 +289,17 @@ const Chat = () => {
       console.error("Error deleting message:", error);
     }
   };
+  useEffect(() => {
+    if (inChatMode && chatPartnerId) {
+      fetchMessages(); // Initial fetch
+
+      const interval = setInterval(() => {
+        refreshMessages();
+      }, 5000); // Adjust the interval time as needed
+
+      return () => clearInterval(interval); // Cleanup on unmount
+    }
+  }, [inChatMode, chatPartnerId]);
 
   // Reply to a message
   const replyToMessage = (messageId) => {
@@ -111,54 +315,127 @@ const Chat = () => {
     return date.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
   };
 
+  // Manually refresh messages
+  const refreshMessages = () => {
+    fetchMessages();
+  };
+
+  // Render ID selection screen
+  if (!inChatMode) {
+    return (
+      <div className="chat">
+        <div className="chat-header">
+          <h1>Start a New Chat</h1>
+        </div>
+        <div className="id-selection-container">
+          <p>Enter the ID of the user you want to chat with:</p>
+          <form onSubmit={enterChat} className="id-input-form">
+            <input
+              type="text"
+              className="input-field"
+              placeholder="User ID..."
+              value={chatPartnerInput}
+              onChange={(e) => setChatPartnerInput(e.target.value)}
+            />
+            <p>Enter your ID</p>
+            <input
+              type="text"
+              className="input-field"
+              placeholder="User ID..."
+              value={currentUser.id}
+              onChange={(e) =>
+                setCurrentUser({ ...currentUser, id: e.target.value })
+              }
+            />
+            <button type="submit" className="input-button send-button">
+              Start Chat
+            </button>
+          </form>
+        </div>
+      </div>
+    );
+  }
+
+  // Render chat interface
   return (
     <div className="chat">
       <div className="chat-header">
-        <h1>{currentUser.name}</h1>
+        <button className="back-button" onClick={exitChat}>
+          <FiArrowLeft />
+        </button>
+        <h1>Chat with {chatPartnerId}</h1>
+        <div className="debug-info" style={{ fontSize: "10px", color: "#888" }}>
+          Status: {debugInfo.status}{" "}
+          {debugInfo.lastEvent
+            ? `| Last event: ${new Date(
+                debugInfo.lastEvent
+              ).toLocaleTimeString()}`
+            : ""}
+          <button
+            onClick={refreshMessages}
+            style={{ marginLeft: "10px", padding: "2px 5px", fontSize: "10px" }}
+          >
+            Refresh
+          </button>
+        </div>
       </div>
 
       <div className="message-container">
-        {messages.map((message) => (
-          <div
-            key={message.id}
-            className={`message-wrapper ${
-              message.user_id === currentUser.id ? "own" : ""
-            }`}
-          >
-            {message.user_id !== currentUser.id && (
-              <div className="message-avatar">
-                {getInitials(message.user_id)}
-              </div>
-            )}
+        {messages.length === 0 ? (
+          <div className="empty-chat-message">
+            No messages yet. Start the conversation!
+          </div>
+        ) : (
+          messages.map((message) => (
+            <div
+              key={message.id}
+              className={`message-wrapper ${
+                message.user_id === currentUser.id ? "own" : ""
+              }`}
+            >
+              {message.user_id !== currentUser.id && (
+                <div className="message-avatar">
+                  {getInitials(message.user_id)}
+                </div>
+              )}
 
-            <div className="message-content">
-              <div
-                className={`message ${
-                  message.user_id === currentUser.id ? "sent" : "received"
-                }`}
-                onDoubleClick={() =>
-                  message.user_id === currentUser.id &&
-                  deleteMessage(message.id)
-                }
-              >
-                {message.content}
-              </div>
-
-              <div className="message-footer">
-                <span className="message-time">
-                  {formatTime(message.created_at)}
-                </span>
-                <button
-                  className="reply-button"
-                  onClick={() => replyToMessage(message.id)}
+              <div className="message-content">
+                <div
+                  className={`message ${
+                    message.user_id === currentUser.id ? "sent" : "received"
+                  }`}
+                  onDoubleClick={() =>
+                    message.user_id === currentUser.id &&
+                    deleteMessage(message.id)
+                  }
                 >
-                  Reply: {message.content.substring(0, 20)}
-                  {message.content.length > 20 ? "..." : ""}
-                </button>
+                  <button
+                    className="reply-button"
+                    onClick={() =>
+                      message.user_id === currentUser.id &&
+                      deleteMessage(message.id)
+                    }
+                  >
+                    Delete
+                  </button>
+                  {message.content}
+                </div>
+
+                <div className="message-footer">
+                  <span className="message-time">
+                    {formatTime(message.created_at)}
+                  </span>
+                  <button
+                    className="reply-button"
+                    onClick={() => replyToMessage(message.id)}
+                  >
+                    Reply
+                  </button>
+                </div>
               </div>
             </div>
-          </div>
-        ))}
+          ))
+        )}
         <div ref={messagesEndRef} />
       </div>
 
