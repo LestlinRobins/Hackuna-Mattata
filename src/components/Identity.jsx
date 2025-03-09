@@ -11,7 +11,7 @@ import {
   Avatar,
 } from "@mui/material";
 import PhoneIcon from "@mui/icons-material/Phone";
-import { supabase } from "../supabase";
+import { supabase } from "../Supabase";
 
 /**
  * FakeIdentity Component
@@ -49,7 +49,7 @@ const FakeIdentity = ({ onBack, onConfirm, apiUrl }) => {
 
       if (error) {
         console.error("Error fetching identities:", error);
-        showAlert(`Error fetching identities: ${error.message}`, "error");
+        showAlert(`Error fetching identities: ${error.message}, "error"`);
       } else {
         setIdentities(data || []);
       }
@@ -133,14 +133,14 @@ const FakeIdentity = ({ onBack, onConfirm, apiUrl }) => {
 
       if (error) {
         console.error("Error creating identity:", error);
-        showAlert(`Error creating identity: ${error.message}`, "error");
+        showAlert(`Error creating identity: ${error.message}, "error"`);
       } else if (data) {
         setIdentities([...identities, ...data]);
         showAlert("Identity created successfully!", "success");
       }
     } catch (err) {
       console.error("Error creating identity:", err);
-      showAlert(`Error creating identity: ${err.message}`, "error");
+      showAlert(`Error creating identity: ${err.message}, "error"`);
     } finally {
       setLoading(false);
     }
@@ -171,10 +171,10 @@ const FakeIdentity = ({ onBack, onConfirm, apiUrl }) => {
         throw new Error(data.error || "Failed to initiate call");
       }
 
-      showAlert(`Call initiated!`, "success");
+      showAlert(`Call initiated!, "success"`);
     } catch (err) {
       console.error("Error making call:", err);
-      showAlert(`Error making call: ${err.message}`, "error");
+      showAlert(`Error making call: ${err.message}, "error"`);
     } finally {
       setCallLoading(false);
     }

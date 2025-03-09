@@ -102,7 +102,7 @@
   top: -25px;
   z-index: 2;
   background-color: #3333336f;
-  backdrop-filter: blur(15px);
+  /* backdrop-filter: blur(15px); */
   height: 4vh;
   align-items: center;
   box-shadow: 2px 5px 10px 1px rgba(0, 0, 0, 0.53);

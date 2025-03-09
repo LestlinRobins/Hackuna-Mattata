@@ -1,13 +1,23 @@
 // File: src/components/Home.jsx
 import { useState } from "react";
 import "../styles/Home.css";
+import Identity from "./Identity";
+import avatar1 from '../assets/avatar1.png';
+import avatar2 from '../assets/avatar2.png';
+import avatar3 from '../assets/avatar3.png';
 import FakeIdentity from "./Identity";
 
 const Home = () => {
   const [showIdentity, setShowIdentity] = useState(false);
+  const [image, setImage] = useState('');
+  const [selectedImage, setSelectedImage] = useState(''); 
 
   const handleCreateClick = () => {
-    setShowIdentity(true);
+    if (selectedImage === '') {
+      alert('Select an Avatar.');
+    } else {
+      setShowIdentity(true);
+    }
   };
 
   const handleBackClick = () => {
@@ -15,9 +25,19 @@ const Home = () => {
   };
 
   const handleConfirmClick = () => {
-    // Handle confirmation logic here
     setShowIdentity(false);
-    // You could add additional logic here if needed
+    // You can add additional logic here if needed
+  };
+
+  const avatarImages = {
+    avatar1: avatar1,
+    avatar2: avatar2,
+    avatar3: avatar3
+  };
+
+  const handleAvatarClick = (imageKey) => {
+    setSelectedImage(imageKey);
+    setImage(avatarImages[imageKey]);
   };
 
   // Render the Identity component if showIdentity is true
@@ -59,26 +79,26 @@ const Home = () => {
 
       <div className="persona-section">
         <h2>Step into a New Persona</h2>
-        <p className="subtitle">identities are just a click away</p>
+        <p className="subtitle">Identities are just a click away</p>
 
         <div className="avatar-grid">
-          <div className="avatar-item">
-            <img
-              src="https://drive.google.com/thumbnail?id=1PZT1Cp52D7cMhvishy1EAiFFAJLEEpYr"
-              alt="Avatar 1"
-            />
+          <div
+            className={`avatar-item ${selectedImage === 'avatar1' ? 'selected' : ''}`}
+            onClick={() => handleAvatarClick('avatar1')}
+          >
+            <img src={avatar1} alt="Avatar 1" />
           </div>
-          <div className="avatar-item selected">
-            <img
-              src="https://drive.google.com/thumbnail?id=13U3ngsvMSIZka-F_QpwFXlShBFx1Vztc"
-              alt="Avatar 2"
-            />
+          <div
+            className={`avatar-item ${selectedImage === 'avatar2' ? 'selected' : ''}`}
+            onClick={() => handleAvatarClick('avatar2')}
+          >
+            <img src={avatar2} alt="Avatar 2" />
           </div>
-          <div className="avatar-item">
-            <img
-              src="https://drive.google.com/thumbnail?id=1B9nuGmEG19nbdq2Sm0ygifbksomW4tm8"
-              alt="Avatar 3"
-            />
+          <div
+            className={`avatar-item ${selectedImage === 'avatar3' ? 'selected' : ''}`}
+            onClick={() => handleAvatarClick('avatar3')}
+          >
+            <img src={avatar3} alt="Avatar 3" />
           </div>
         </div>
 

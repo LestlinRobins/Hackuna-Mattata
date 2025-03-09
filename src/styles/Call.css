@@ -194,3 +194,30 @@
 .control-button.active {
   background-color: #e74c3c;
 }
+.appbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #242425;
+  padding: 10px 20px;
+  color: white;
+}
+
+.appbar-left h1 {
+  margin: 0;
+}
+.appbar-right h1 {
+  margin: 0;
+}
+/* .appbar-right {
+  margin-left: 15px;
+  background-color: transparent;
+  padding: 5px 10px;
+  color: white;
+  cursor: pointer;
+  align-self: 'center';
+} */
+
+.appbar-right button:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+}
