@@ -1,4 +1,8 @@
-SKIP_PREFLIGHT_CHECK=true
-TWILIO_ACCOUNT_SID=AC35708c0eb8b1569fc58d24b33a99f447
-TWILIO_AUTH_TOKEN=209a9066428bad770d60adedaf5a6495
-TWILIO_PHONE_NUMBER=+18064910112
+const { createClient } = require('@supabase/supabase-js');
+
+const supabaseUrl = process.env.SUPABASE_URL || 'https://azxiqnicyveuixgudrtc.supabase.co';
+const supabaseAnonKey = process.env.SUPABASE_ANON_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImF6eGlxbmljeXZldWl4Z3VkcnRjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDEzNDg4OTQsImV4cCI6MjA1NjkyNDg5NH0.65zD9IERIrzn-hK4uhg_JC0Jv1GhR2bZR6yQRWuQ6Rg';
+
+const supabase = createClient(supabaseUrl, supabaseAnonKey);
+
+module.exports = supabase;
