@@ -9,10 +9,13 @@ import avatar3 from '../assets/avatar3.png'
 const Home = () => {
   const [showIdentity, setShowIdentity] = useState(false);
   const [image, setImage] = useState('');
-  const [selectedImage, setSelectedImage] = useState(''); // Track selected image
-
+  const [selectedImage, setSelectedImage] = useState(''); 
   const handleCreateClick = () => {
-    setShowIdentity(true);
+    if(selectedImage==''){
+      alert('Select an Avatar.');
+    }else{
+      setShowIdentity(true);
+    }
   };
 
   const handleBackClick = () => {

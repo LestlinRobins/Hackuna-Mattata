@@ -5,7 +5,7 @@ import VideoPlayer from './VideoPlayer';
 import "../styles/Call.css";
 import { CallEnd, CallEndTwoTone, Mic, MicExternalOffOutlined, MicExternalOnOutlined, MicOff, VolumeMuteOutlined } from '@mui/icons-material';
 const APP_ID = '608567868b1643d7bef27e64eb47e078';
-const TOKEN = '007eJxTYNjJtLr32jqO7AunHRnqH9xZeaX8yOdWrcVSLCZFTIzaaz4pMJgZWJiamVuYWSQZmpkYp5gnpaYZmaeamaQmmZinGphb3JM8k94QyMjwrmIZAyMUgvjcDKXFqUWGuiDSiIEBAD1jIhI=';
+const TOKEN = '007eJxTYDj1Olvw2XTXZtHnitMK5/TNbVp2a97ZpxtmnF4v2Jj99tNOBQYzAwtTM3MLM4skQzMT4xTzpNQ0I/NUM5PUJBPzVANzi427z6Y3BDIynJlznJmRAQJBfG6G0uLUIkNdEGnEwAAAaP0mKg==';
 const CHANNEL = 'user1-user2';
 const client = AgoraRTC.createClient({
     mode: 'rtc',
@@ -80,9 +80,9 @@ const AudioRoom = ({userName}) => {
           <div className="appbar">
           <div className="appbar-left">
             <h1>Distral</h1>
-          </div>
+          </div>  
           <div className="appbar-right">
-            <h1>Video-Call</h1>
+            <h1>Voice-Call</h1>
           </div>
         </div>
         <div className="active-call">
