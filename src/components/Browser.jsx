@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
-import { Switch } from "@mui/material";
+import { Switch, Typography } from "@mui/material";
 
 const Browser = () => {
   const [url, setUrl] = useState("");
@@ -143,6 +143,17 @@ const Browser = () => {
   return (
     <div style={styles.browser}>
       <div style={styles.header}>
+      <div
+        style={{
+          display: 'flex',
+          flexDirection: 'column',
+          justifyContent: 'center',
+          alignItems: 'center',
+          '@media (min-width: 768px)': {
+            flexDirection: 'row',
+          },
+        }}
+      >
         <Switch
           checked={torStatus === "connected"}
           onChange={
@@ -151,11 +162,12 @@ const Browser = () => {
           color="primary"
           sx={{
             "& .MuiSwitch-track": {
-              backgroundColor:
-                torStatus === "connected" ? "#4caf50" : "#f44336",
+              backgroundColor: torStatus === "connected" ? "#4caf50" : "#f44336",
             },
           }}
         />
+        <Typography style={{ color: 'pink' }}>Go Dark</Typography>
+      </div>
         <h2 style={styles.headerTitle}>Browser</h2>
         <button style={styles.addButton}>+</button>
       </div>
