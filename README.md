@@ -1,3 +1,4 @@
 # Hackuna-Mattata
 
 test
+latest
