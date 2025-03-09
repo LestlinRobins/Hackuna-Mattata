@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
+import { Switch } from "@mui/material";
 
 const Browser = () => {
   const [url, setUrl] = useState("");
@@ -141,19 +142,20 @@ const Browser = () => {
 
   return (
     <div style={styles.browser}>
-      {/* Header */}
       <div style={styles.header}>
-        <button
-          onClick={
+        <Switch
+          checked={torStatus === "connected"}
+          onChange={
             torStatus === "disconnected" ? connectToTor : disconnectFromTor
           }
-          style={{
-            ...styles.torButton,
-            backgroundColor: torStatus === "connected" ? "#2ecc71" : "#e74c3c",
+          color="primary"
+          sx={{
+            "& .MuiSwitch-track": {
+              backgroundColor:
+                torStatus === "connected" ? "#4caf50" : "#f44336",
+            },
           }}
-        >
-          {torStatus === "connected" ? "✓" : "⨯"}
-        </button>
+        />
         <h2 style={styles.headerTitle}>Browser</h2>
         <button style={styles.addButton}>+</button>
       </div>
@@ -246,7 +248,7 @@ const styles = {
     height: "100vh",
     backgroundColor: "#121212",
     color: "white",
-    fontFamily: "Arial, sans-serif",
+    fontFamily: "DM Sans, sans-serif",
   },
   header: {
     display: "flex",
@@ -257,7 +259,7 @@ const styles = {
   },
   headerTitle: {
     margin: 0,
-    fontSize: "1.5rem",
+    fontSize: "18px",
     fontWeight: "bold",
   },
   torButton: {

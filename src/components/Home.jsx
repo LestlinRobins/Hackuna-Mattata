@@ -2,18 +2,20 @@
 import { useState } from "react";
 import "../styles/Home.css";
 import Identity from "./Identity";
-import avatar1 from '../assets/avatar1.png'
-import avatar2 from '../assets/avatar2.png'
-import avatar3 from '../assets/avatar3.png'
+import avatar1 from '../assets/avatar1.png';
+import avatar2 from '../assets/avatar2.png';
+import avatar3 from '../assets/avatar3.png';
+import FakeIdentity from "./Identity";
 
 const Home = () => {
   const [showIdentity, setShowIdentity] = useState(false);
   const [image, setImage] = useState('');
   const [selectedImage, setSelectedImage] = useState(''); 
+
   const handleCreateClick = () => {
-    if(selectedImage==''){
+    if (selectedImage === '') {
       alert('Select an Avatar.');
-    }else{
+    } else {
       setShowIdentity(true);
     }
   };
@@ -35,12 +37,14 @@ const Home = () => {
 
   const handleAvatarClick = (imageKey) => {
     setSelectedImage(imageKey);
-    setImage(avatarImages[imageKey]); 
+    setImage(avatarImages[imageKey]);
   };
 
   // Render the Identity component if showIdentity is true
   if (showIdentity) {
-    return <Identity image={image} onBack={handleBackClick} onConfirm={handleConfirmClick} />;
+    return (
+      <FakeIdentity onBack={handleBackClick} onConfirm={handleConfirmClick} />
+    );
   }
 
   // Otherwise render the Home component
