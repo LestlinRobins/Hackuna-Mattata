@@ -1,144 +1,336 @@
-/* File: src/styles/Browser.css */
 .browser {
-  padding: 1.5rem 1rem;
   display: flex;
   flex-direction: column;
-  gap: 1.5rem;
+  width: 100%;
+  max-width: 1200px;
+  height: 80vh;
+  margin: 0 auto;
+  border: 1px solid #333;
+  border-radius: 8px;
+  overflow: hidden;
+  background-color: #000000;
+  color: #ffffff;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen,
+    Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
 }
 
-.browser h1 {
-  font-size: 1.75rem;
-  margin-bottom: 1rem;
+.browser-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 20px;
+  background-color: #0a0a0a;
+  border-bottom: 1px solid #333;
+}
+
+.browser-header h1 {
+  font-size: 18px;
+  margin: 0;
+  color: #3498db; /* Light blue accent */
+}
+
+.tor-status {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.status-indicator {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+}
+
+.status-indicator.disconnected {
+  background-color: #ff5252;
+}
+
+.status-indicator.connecting {
+  background-color: #ffb81c;
+  animation: blink 1s infinite alternate;
+}
+
+.status-indicator.connected {
+  background-color: #ffffff;
+}
+
+@keyframes blink {
+  from {
+    opacity: 0.5;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.tor-button {
+  padding: 5px 10px;
+  border-radius: 4px;
+  border: none;
+  font-size: 12px;
+  cursor: pointer;
+  background-color: #1a1a1a;
+  color: #fff;
+}
+
+.tor-button.connect {
+  background-color: #3498db; /* Light blue accent */
+}
+
+.tor-button.disconnect {
+  background-color: #222222;
+}
+
+.tor-button:disabled {
+  background-color: #333;
+  cursor: not-allowed;
+  opacity: 0.7;
+}
+
+.browser-toolbar {
+  display: flex;
+  padding: 10px;
+  background-color: #0a0a0a;
+  border-bottom: 1px solid #333;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.url-form {
+  display: flex;
+  flex: 1;
+  max-width: 80%;
+}
+
+.url-input {
+  flex: 1;
+  padding: 8px 12px;
+  border-radius: 4px 0 0 4px;
+  border: 1px solid #444;
+  background-color: #1a1a1a;
+  color: #fff;
+  font-size: 14px;
+}
+
+.url-input:disabled {
+  background-color: #111;
+  color: #777;
+  cursor: not-allowed;
+}
+
+.navigate-button {
+  padding: 8px 12px;
+  background-color: #3498db; /* Light blue accent */
+  color: white;
+  border: none;
+  border-radius: 0 4px 4px 0;
+  cursor: pointer;
+}
+
+.navigate-button:disabled {
+  background-color: #1a5685;
+  cursor: not-allowed;
+}
+
+.browser-actions {
+  display: flex;
+  gap: 10px;
+}
+
+.browser-actions button {
+  padding: 6px 10px;
+  background-color: #1a1a1a;
+  color: white;
+  border: 1px solid #333;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.browser-actions button:hover {
+  background-color: #222;
+  border-color: #3498db; /* Light blue accent */
+}
+
+.browser-actions button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.error-message {
+  padding: 8px 16px;
+  background-color: rgba(255, 255, 255, 0.1);
+  color: #ffffff;
+  font-size: 14px;
   text-align: center;
+  border-left: 3px solid #ff5252;
+}
+
+.browser-content {
+  flex: 1;
+  overflow: auto;
+  background-color: #000;
+  position: relative;
+}
+
+.loading-screen {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  color: #fff;
+}
+
+.loading-spinner {
+  width: 40px;
+  height: 40px;
+  border: 3px solid rgba(210, 210, 210, 0.721);
+  border-top: 3px solid #3498db; /* Light blue accent */
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin: 20px 0;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.webpage-container {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.webpage-header {
+  padding: 8px 16px;
+  background-color: #0a0a0a;
+  border-bottom: 1px solid #333;
+  font-size: 14px;
+}
+
+.security-notice {
+  color: #3498db; /* Light blue accent */
+  font-size: 12px;
+  margin: 2px 0 0 0;
+}
+
+.webpage-content {
+  flex: 1;
+  padding: 20px;
+  overflow: auto;
 }
 
 .placeholder-text {
-  text-align: center;
-  color: var(--text-secondary);
-  font-size: 1rem;
-  margin: 2rem 0;
+  color: #999;
+  line-height: 1.5;
 }
 
-.search-box {
-  position: relative;
-  margin-bottom: 1.5rem;
+.start-page {
+  max-width: 600px;
+  margin: 40px auto;
+  padding: 20px;
+  background-color: #0a0a0a;
+  border-radius: 6px;
+  border: 1px solid #333;
 }
 
-.search-input {
-  width: 100%;
-  padding: 1rem 1rem 1rem 3rem;
-  background-color: var(--secondary-bg);
-  border: 1px solid var(--border-color);
-  border-radius: 12px;
-  color: var(--text-primary);
-  font-family: "Work Sans", sans-serif;
-  font-size: 0.9rem;
+.start-page h2 {
+  color: #3498db; /* Light blue accent */
+  margin-top: 0;
 }
 
-.search-input:focus {
-  outline: none;
-  border-color: var(--accent-color);
+.privacy-features {
+  margin-top: 20px;
 }
 
-.search-icon {
+.privacy-features h3 {
+  border-bottom: 1px solid #333;
+  padding-bottom: 5px;
+  color: #fff;
+}
+
+.privacy-features ul {
+  padding-left: 20px;
+}
+
+.privacy-features li {
+  margin-bottom: 8px;
+  color: #ccc;
+}
+
+.browser-sidebar {
+  width: 250px;
+  background-color: #0a0a0a;
+  border-left: 1px solid #333;
+  padding: 15px;
+  overflow-y: auto;
   position: absolute;
-  left: 1rem;
-  top: 50%;
-  transform: translateY(-50%);
-  color: var(--text-secondary);
-  font-size: 1.25rem;
+  right: 0;
+  top: 0;
+  bottom: 0;
 }
 
-.privacy-stats {
-  background-color: var(--secondary-bg);
-  border-radius: 12px;
-  padding: 1.25rem;
-  margin-bottom: 1.5rem;
+.browser-sidebar h3 {
+  color: #3498db; /* Light blue accent */
+  margin-top: 0;
+  font-size: 16px;
+  border-bottom: 1px solid #333;
+  padding-bottom: 5px;
 }
 
-.privacy-stats h2 {
-  font-size: 1.25rem;
-  margin-bottom: 1rem;
+.browser-sidebar ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
 }
 
-.stats-grid {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 1rem;
+.browser-sidebar li {
+  padding: 8px 10px;
+  border-bottom: 1px solid #222;
+  font-size: 14px;
+  cursor: pointer;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
-.stat-card {
-  background-color: rgba(255, 255, 255, 0.05);
-  border-radius: 8px;
-  padding: 1rem;
-  text-align: center;
+.browser-sidebar li:hover {
+  background-color: #111;
+  color: #3498db; /* Light blue accent */
+}
+.iframe-container {
+  position: relative;
+  height: 100%;
+  overflow: hidden;
 }
 
-.stat-card .value {
-  font-size: 1.5rem;
-  font-weight: 600;
-  margin-bottom: 0.5rem;
-  color: var(--accent-color);
+.webpage-iframe {
+  width: 100%;
+  height: 100%;
+  border: none;
+  background-color: white;
 }
 
-.stat-card .label {
-  font-size: 0.8rem;
-  color: var(--text-secondary);
-}
-
-.bookmarks {
-  background-color: var(--secondary-bg);
-  border-radius: 12px;
-  padding: 1.25rem;
-}
-
-.bookmarks h2 {
-  font-size: 1.25rem;
-  margin-bottom: 1rem;
-}
-
-.bookmark-list {
+.iframe-overlay {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background-color: rgba(0, 0, 0, 0.8);
+  padding: 10px;
+  font-size: 12px;
   display: flex;
-  flex-direction: column;
-  gap: 0.75rem;
-}
-
-.bookmark-item {
-  display: flex;
-  align-items: center;
-  padding: 0.75rem;
-  background-color: rgba(255, 255, 255, 0.05);
-  border-radius: 8px;
-  transition: background-color 0.2s ease;
-}
-
-.bookmark-item:hover {
-  background-color: rgba(255, 255, 255, 0.1);
-}
-
-.bookmark-icon {
-  width: 32px;
-  height: 32px;
-  border-radius: 8px;
-  background-color: var(--accent-color);
-  display: flex;
-  align-items: center;
   justify-content: center;
-  margin-right: 1rem;
-  font-weight: 700;
-  color: white;
 }
 
-.bookmark-details {
-  flex: 1;
-}
-
-.bookmark-details h3 {
-  font-size: 0.9rem;
-  margin-bottom: 0.25rem;
-}
-
-.bookmark-details p {
-  font-size: 0.75rem;
-  color: var(--text-secondary);
+.overlay-notice {
+  color: #ffffff;
+  text-align: center;
+  margin: 0;
+  max-width: 80%;
 }

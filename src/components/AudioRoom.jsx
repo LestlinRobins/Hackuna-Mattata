@@ -1,17 +1,15 @@
 import React, { useEffect, useState } from 'react'
 import AgoraRTC from 'agora-rtc-sdk-ng';
 import { FiMic, FiMicOff, FiPhone } from 'react-icons/fi';
-import VideoPlayer from './VideoPlayer';
-import "../styles/Call.css";
 const APP_ID = '608567868b1643d7bef27e64eb47e078';
-const TOKEN = '007eJxTYNjJtLr32jqO7AunHRnqH9xZeaX8yOdWrcVSLCZFTIzaaz4pMJgZWJiamVuYWSQZmpkYp5gnpaYZmaeamaQmmZinGphb3JM8k94QyMjwrmIZAyMUgvjcDKXFqUWGuiDSiIEBAD1jIhI=';
-const CHANNEL = 'user1-user2';
+const TOKEN = '007eJxTYFB7ONH7xBn9wF/7zJ/HcF/9++TwG0dWFaOmaY8Lrv+XMGNQYDAzsDA1M7cws0gyNDMxTjFPSk0zMk81M0lNMjFPNTC3iJA+m94QyMiwX1iamZEBAkF8bobS4tQiQ10QaczAAABwXiGq';
+const CHANNEL = 'user1-user3';
 const client = AgoraRTC.createClient({
     mode: 'rtc',
     codec: 'vp8',
     
 })
-const VideoRoom = ({username}) => {
+const AudioRoom = () => {
     const [user, setUser]=useState([]);
     const [isMuted, setIsMuted] = useState(false);
     const [isVideoOn, setIsVideoOn] = useState(true);
@@ -75,44 +73,36 @@ const VideoRoom = ({username}) => {
         }
     }, []);
   return (
-        <div>
-          <div className="appbar">
-          <div className="appbar-left">
-            <h1>Distral</h1>
-          </div>
-          <div className="appbar-right">
-            <h1>Video-Call</h1>
-          </div>
-        </div>
+    <div>
         <div className="active-call">
             <div className="caller-info">
+            <div className="large-avatar">{isVideoOn ? "Video" : "AN"}</div>
+            <h2>AN1234</h2>
             <p>Secure call in progress</p>
-            <br />
-            <h1>{username}</h1>
             </div>
             <div style={{display:'flex', justifyContent:'center'}}>
-                <div style={{display:'flex', flexDirection:'row', justifyContent:'space-evenly'}}>
+                <div style={{display:'grid', gridTemplateColumns: 'repeat(2, 200px)'}}>
                     {user.map((users)=>(
                         <div key={users.uid}>
-                            <VideoPlayer user={users} key={users.uid} />
+                            {/* <VideoPlayer user={users} key={users.uid} /> */}
                         </div>
                     ))}
                 </div>
             </div>
             <div className="call-controls">
-              <button
-                  className={`control-button ${isMuted ? "active" : ""}`}
-                  onClick={toggleMute}
-              >
-                  {isMuted ? <FiMicOff /> : <FiMic />}
-              </button>
-              <button style={{alignSelf:'center'}} className="control-button end" onClick={()=>refreshPage()}>
-                <FiPhone />
+            <button
+                className={`control-button ${isMuted ? "active" : ""}`}
+                onClick={toggleMute}
+            >
+                {isMuted ? <FiMicOff /> : <FiMic />}
             </button>
             </div>
+            <button style={{alignSelf:'center'}} className="control-button end" onClick={()=>refreshPage()}>
+              <FiPhone />
+          </button>
         </div>
     </div>
   )
 }
 
-export default VideoRoom
+export default AudioRoom

@@ -1,5 +1,11 @@
 import { useState, useEffect, useRef } from "react";
-import { FiSend, FiPlus, FiArrowLeft } from "react-icons/fi";
+import {
+  FiPlus,
+  FiArrowLeft,
+  FiSend,
+  FiCornerUpLeft,
+  FiX,
+} from "react-icons/fi";
 import "../styles/Chat.css";
 import { supabase } from "../supabase";
 
@@ -15,6 +21,10 @@ const Chat = () => {
   const [inChatMode, setInChatMode] = useState(false);
   const messagesEndRef = useRef(null);
   const subscriptionRef = useRef(null);
+
+  const [activeReply, setActiveReply] = useState(null);
+  const [replyPreview, setReplyPreview] = useState(null);
+
   const [debugInfo, setDebugInfo] = useState({
     status: "Idle",
     lastEvent: null,
@@ -151,7 +161,6 @@ const Chat = () => {
         chatPartnerId
       );
       setDebugInfo((prev) => ({ ...prev, status: "Fetching messages" }));
-
       // Properly formatted query with parameter binding
       const { data, error } = await supabase
         .from("messages")
@@ -219,72 +228,64 @@ const Chat = () => {
     setDebugInfo({ status: "Exited chat", lastEvent: null });
   };
 
+  const startReply = (message) => {
+    setActiveReply(message.id);
+    setReplyPreview(message);
+  };
+
+  const cancelReply = () => {
+    setActiveReply(null);
+    setReplyPreview(null);
+  };
+
   // Send a new message
   const sendMessage = async (e) => {
     e.preventDefault();
     if (!newMessage.trim()) return;
 
-    // Clear the input field immediately for better UX
-    const messageContent = newMessage;
-    setNewMessage("");
-    setDebugInfo((prev) => ({ ...prev, status: "Sending message" }));
-
-    // Generate a UUID for the message ID
-    const messageId = crypto.randomUUID
-      ? crypto.randomUUID()
-      : `local-${Date.now()}`;
-
-    const newMsg = {
-      id: messageId, // Add an ID field
+    const messageData = {
+      id: Date.now(),
       user_id: currentUser.id,
       recipient_id: chatPartnerId,
-      content: messageContent,
+      content: newMessage,
+      reply_to: activeReply, // Add reply reference
       created_at: new Date().toISOString(),
     };
 
     try {
       const { data, error } = await supabase
         .from("messages")
-        .insert([newMsg])
+        .insert([messageData])
         .select();
 
       if (error) throw error;
 
-      console.log("Message sent successfully:", data);
-      setDebugInfo((prev) => ({
-        ...prev,
-        status: "Message sent",
-        lastEvent: new Date().toISOString(),
-      }));
-
-      // Force update UI with the new message
-      if (data && data.length > 0) {
-        setMessages((prevMessages) => [...prevMessages, data[0]]);
-      } else {
-        // If no data returned, use our local message object
-        setMessages((prevMessages) => [...prevMessages, newMsg]);
-      }
+      setNewMessage("");
+      setActiveReply(null);
+      setReplyPreview(null);
     } catch (error) {
-      console.error("Error sending message:", error);
-      setDebugInfo((prev) => ({
-        ...prev,
-        status: `Send error: ${error.message}`,
-      }));
-      // Restore the message if sending failed
-      setNewMessage(messageContent);
+      console.error("Reply error:", error);
     }
   };
 
   // Delete a message
   const deleteMessage = async (messageId) => {
     try {
-      const { error } = await supabase
-        .from("messages")
-        .delete()
-        .eq("id", messageId);
+      // First, find the message element and add the dissolving class
+      const messageElement = document.getElementById(`message-${messageId}`);
+      if (messageElement) {
+        messageElement.classList.add("dissolving");
 
-      if (error) throw error;
-      setMessages(messages.filter((msg) => msg.id !== messageId));
+        // Wait for animation to complete before removing from database and state
+        setTimeout(async () => {
+          const { error } = await supabase
+            .from("messages")
+            .delete()
+            .eq("id", messageId);
+          if (error) throw error;
+          setMessages(messages.filter((msg) => msg.id !== messageId));
+        }, 800); // Match this timeout to the animation duration
+      }
     } catch (error) {
       console.error("Error deleting message:", error);
     }
@@ -300,14 +301,6 @@ const Chat = () => {
       return () => clearInterval(interval); // Cleanup on unmount
     }
   }, [inChatMode, chatPartnerId]);
-
-  // Reply to a message
-  const replyToMessage = (messageId) => {
-    const message = messages.find((msg) => msg.id === messageId);
-    if (message) {
-      setNewMessage(`Reply: ${message.content.substring(0, 20)}... `);
-    }
-  };
 
   // Format timestamp
   const formatTime = (timestamp) => {
@@ -347,7 +340,7 @@ const Chat = () => {
                 setCurrentUser({ ...currentUser, id: e.target.value })
               }
             />
-            <button type="submit" className="input-button send-button">
+            <button type="submit" className="start-button">
               Start Chat
             </button>
           </form>
@@ -379,7 +372,16 @@ const Chat = () => {
           </button>
         </div>
       </div>
-
+      {replyPreview && (
+        <div className="reply-preview">
+          <div className="reply-preview-content">
+            Replying to: {replyPreview.content}
+            <button className="cancel-reply" onClick={cancelReply}>
+              <FiX />
+            </button>
+          </div>
+        </div>
+      )}
       <div className="message-container">
         {messages.length === 0 ? (
           <div className="empty-chat-message">
@@ -389,16 +391,24 @@ const Chat = () => {
           messages.map((message) => (
             <div
               key={message.id}
+              id={`message-${message.id}`} // Add this ID
               className={`message-wrapper ${
                 message.user_id === currentUser.id ? "own" : ""
               }`}
+              dataText={message.content}
             >
               {message.user_id !== currentUser.id && (
                 <div className="message-avatar">
                   {getInitials(message.user_id)}
                 </div>
               )}
-
+              {message.reply_to && (
+                <div className="reply-indicator">
+                  Replying to:{" "}
+                  {messages.find((m) => m.id === message.reply_to)?.content ||
+                    "Original message deleted"}
+                </div>
+              )}
               <div className="message-content">
                 <div
                   className={`message ${
@@ -408,29 +418,14 @@ const Chat = () => {
                     message.user_id === currentUser.id &&
                     deleteMessage(message.id)
                   }
+                  onClick={() => startReply(message)}
                 >
-                  <button
-                    className="reply-button"
-                    onClick={() =>
-                      message.user_id === currentUser.id &&
-                      deleteMessage(message.id)
-                    }
-                  >
-                    Delete
-                  </button>
                   {message.content}
                 </div>
-
                 <div className="message-footer">
                   <span className="message-time">
                     {formatTime(message.created_at)}
                   </span>
-                  <button
-                    className="reply-button"
-                    onClick={() => replyToMessage(message.id)}
-                  >
-                    Reply
-                  </button>
                 </div>
               </div>
             </div>
@@ -443,13 +438,10 @@ const Chat = () => {
         <input
           type="text"
           className="input-field"
-          placeholder="Message..."
+          placeholder="Type a message..."
           value={newMessage}
           onChange={(e) => setNewMessage(e.target.value)}
         />
-        <button type="button" className="input-button plus-button">
-          <FiPlus />
-        </button>
         <button type="submit" className="input-button send-button">
           <FiSend />
         </button>

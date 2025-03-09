@@ -3,18 +3,28 @@ import { useState } from "react";
 import { FiPhone, FiVideo, FiMic, FiMicOff, FiVideoOff } from "react-icons/fi";
 import "../styles/Call.css";
 import VideoRoom from "./VideoRoom";
-
+import AudioRoom from "./AudioRoom";
+import callicon from '../assets/call2.svg'
+import { VideoCall, VideoCallRounded } from "@mui/icons-material";
 const Call = () => {
   const [isInCall, setIsInCall] = useState(false);
   const [isMuted, setIsMuted] = useState(false);
   const [isVideoOn, setIsVideoOn] = useState(true);
   const [isjoined, setisjoined]=useState(false);
+  const [userName, setuserName]=useState('');
   const [recentCalls] = useState([
     { id: "call1", name: "AN1234", time: "10:45 AM", missed: false },
     { id: "call2", name: "XY5678", time: "9:22 AM", missed: true },
     { id: "call3", name: "KL9012", time: "Yesterday", missed: false },
   ]);
-
+  const handleVideoCall = ()=>{
+    if(userName==''){
+      alert('Enter a valid userName to connect the call');
+    }else{
+      setIsVideoOn(true);
+      setisjoined(true);
+    }
+  }
   const toggleCall = () => {
     setIsInCall(!isInCall);
   };
@@ -29,8 +39,6 @@ const Call = () => {
 
   return (
     <div className="call">
-      <h1>Secure Calls</h1>
-
       {(!isInCall && !isjoined) && (
         <>
           <div className="call-section">
@@ -46,61 +54,43 @@ const Call = () => {
                     <h3>{call.name}</h3>
                     <p>{call.time}</p>
                   </div>
-                  <button className="call-action">
-                    <FiPhone />
+                  <button style={{height:'60px', width:'60px', borderRadius:'50%', backgroundColor:'var(--accent-color)'}}>
+                    <img src={callicon} alt="" />
                   </button>
                 </div>
               ))}
             </div>
           </div>
 
-          <div className="call-dialpad">
+          <div style={{display:'flex', flexDirection:'row', justifyContent:'space-evenly', marginTop:'10%'}}>
             <input
               type="text"
               placeholder="Enter ID or search"
               className="call-input"
+              style={{width:'70%', height:'70px'}}
+              value={userName}
+              onChange={(e)=>setuserName(e.target.value)}
             />
-            <div className="call-buttons">
-              <button className="call-button voice" onClick={toggleCall}>
-                <FiPhone />
-              </button>
-              <button
-                className="call-button video"
-                onClick={() => {
-                  setIsVideoOn(true);
-                  setisjoined(true);
-                }}
-              >
-                <FiVideo />
-              </button>
-            </div>
+            <button className="call-button voice" onClick={toggleCall}>
+              <img src={callicon} alt="" />
+            </button>
+            <button
+              className="call-button video"
+              onClick={() => {
+                handleVideoCall()
+              }}
+            >
+              <VideoCallRounded />
+            </button>
           </div>
         </>
       )}
       {isInCall && (
-        <div className="active-call">
-          <div className="caller-info">
-            <div className="large-avatar">{isVideoOn ? "Video" : "AN"}</div>
-            <h2>AN1234</h2>
-            <p>Secure call in progress</p>
-          </div>
-
-          <div className="call-controls">
-            <button
-              className={`control-button ${isMuted ? "active" : ""}`}
-              onClick={toggleMute}
-            >
-              {isMuted ? <FiMicOff /> : <FiMic />}
-            </button>
-            <button className="control-button end" onClick={toggleCall}>
-              <FiPhone />
-            </button>
-          </div>
-        </div>
+        <AudioRoom />
       )}
       {isjoined && (
         <>
-          <VideoRoom />
+          <VideoRoom username={userName} />
         </>
         
       )}
