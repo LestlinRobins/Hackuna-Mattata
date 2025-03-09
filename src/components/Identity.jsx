@@ -12,42 +12,6 @@ import {
 } from "@mui/material";
 import PhoneIcon from "@mui/icons-material/Phone";
 import { supabase } from "../supabase";
-import { display, fontSize, fontWeight, maxWidth } from "@mui/system";
-
-// CSS styles directly in the component
-const styles = {
-  container: {
-    backgroundColor: "#0f0f0f",
-    borderRadius: "8px",
-    padding: "34px",
-    boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)",
-    marginTop: "2rem",
-    marginBottom: "2rem",
-    textAlign: "center",
-    maxWidth: "80%",
-    alignItems: "center",
-    display: "flex",
-    flexDirection: "column",
-    justifyContent: "center",
-    marginLeft: "20px",
-  },
-  listItem: {
-    display: "flex",
-    justifyContent: "space-between",
-    alignItems: "center",
-    padding: "12px",
-    borderBottom: "1px solid #eee",
-  },
-  avatarContainer: {
-    display: "flex",
-    alignItems: "center",
-    gap: "16px",
-  },
-  header: {
-    fontSize: "1.5rem",
-    fontWeight: "bold",
-  },
-};
 
 /**
  * FakeIdentity Component
@@ -55,12 +19,12 @@ const styles = {
  * A standalone component for generating and displaying fake identities with avatars.
  * Features:
  * - Generate random identities with name, email, phone number, and avatar
- * - Store identities in Supabase (if configured)
+ * - Store identities in Supabase
  * - Optional: Make phone calls via Twilio API (requires backend)
  *
  * @param {Object} props - Component props
- * @param {string} props.supabaseUrl - Optional Supabase URL
- * @param {string} props.supabaseKey - Optional Supabase key
+ * @param {function} props.onBack - Function to handle back navigation
+ * @param {function} props.onConfirm - Function to handle confirmation
  * @param {string} props.apiUrl - Optional API URL for Twilio integration
  */
 const FakeIdentity = ({ onBack, onConfirm, apiUrl }) => {
@@ -73,21 +37,12 @@ const FakeIdentity = ({ onBack, onConfirm, apiUrl }) => {
     type: "info",
   });
 
-  // // Initialize Supabase client if credentials are provided
-  // const supabase = supabaseUrl && supabaseKey
-  //   ? createClient(supabaseUrl, supabaseKey)
-  //   : null;
-
   useEffect(() => {
-    // Fetch identities on component mount if Supabase is configured
-    if (supabase) {
-      fetchIdentities();
-    }
-  }, [supabase]);
+    // Fetch identities on component mount
+    fetchIdentities();
+  }, []);
 
   async function fetchIdentities() {
-    if (!supabase) return;
-
     setLoading(true);
     try {
       const { data, error } = await supabase.from("identities").select("*");
@@ -168,26 +123,19 @@ const FakeIdentity = ({ onBack, onConfirm, apiUrl }) => {
         email,
         phone,
         avatar: avatarUrl,
-        id: Date.now(), // Local ID if not using Supabase
       };
 
-      if (supabase) {
-        // Store in Supabase if configured
-        const { data, error } = await supabase
-          .from("identities")
-          .insert([newIdentity])
-          .select();
+      // Store in Supabase
+      const { data, error } = await supabase
+        .from("identities")
+        .insert([newIdentity])
+        .select();
 
-        if (error) {
-          console.error("Error creating identity:", error);
-          showAlert(`Error creating identity: ${error.message}`, "error");
-        } else if (data) {
-          setIdentities([...identities, ...data]);
-          showAlert("Identity created successfully!", "success");
-        }
-      } else {
-        // Just add to local state if Supabase is not configured
-        setIdentities([...identities, newIdentity]);
+      if (error) {
+        console.error("Error creating identity:", error);
+        showAlert(`Error creating identity: ${error.message}`, "error");
+      } else if (data) {
+        setIdentities([...identities, ...data]);
         showAlert("Identity created successfully!", "success");
       }
     } catch (err) {
@@ -242,26 +190,59 @@ const FakeIdentity = ({ onBack, onConfirm, apiUrl }) => {
 
   return (
     <Container maxWidth="md">
-      <div sx={styles.container}>
-        <h1 style={{ fontSize: "1.5rem" }} className="header">
+      <Box
+        sx={{
+          backgroundColor: "#0f0f0f",
+          borderRadius: "8px",
+          padding: "34px",
+          boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)",
+          marginTop: "2rem",
+          marginBottom: "2rem",
+          textAlign: "center",
+          maxWidth: "100%",
+          alignItems: "center",
+          display: "flex",
+          flexDirection: "column",
+          justifyContent: "center",
+          color: "#ffffff",
+        }}
+      >
+        <Typography variant="h5" component="h1" fontWeight="bold" gutterBottom>
           Fake Identity Generator
-        </h1>
+        </Typography>
 
-        <button
-          style={{
+        <Button
+          variant="contained"
+          color="secondary"
+          onClick={handleCreateIdentity}
+          disabled={loading}
+          sx={{
             alignSelf: "center",
             marginTop: "1rem",
+            marginBottom: "2rem",
             backgroundColor: "#e91e63",
+            "&:hover": {
+              backgroundColor: "#c2185b",
+            },
           }}
         >
           {loading ? "Loading..." : "Create Identity"}
-        </button>
+        </Button>
 
         <List sx={{ width: "100%" }}>
           {identities.map((identity) => (
             <ListItem
               key={identity.id}
-              sx={styles.listItem}
+              sx={{
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "center",
+                padding: "12px",
+                borderBottom: "1px solid #333",
+                backgroundColor: "#1a1a1a",
+                marginBottom: "8px",
+                borderRadius: "4px",
+              }}
               secondaryAction={
                 apiUrl && (
                   <IconButton
@@ -269,19 +250,26 @@ const FakeIdentity = ({ onBack, onConfirm, apiUrl }) => {
                     aria-label="call"
                     onClick={() => handleMakeCall(identity.phone)}
                     disabled={callLoading}
+                    sx={{ color: "#e91e63" }}
                   >
                     <PhoneIcon />
                   </IconButton>
                 )
               }
             >
-              <Box sx={styles.avatarContainer}>
+              <Box
+                sx={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "16px",
+                }}
+              >
                 <Avatar
                   src={identity.avatar}
                   alt={identity.name}
                   sx={{ width: 50, height: 50 }}
                 />
-                <Typography>
+                <Typography sx={{ color: "#ffffff" }}>
                   {identity.name} - {identity.email} - {identity.phone}
                 </Typography>
               </Box>
@@ -296,7 +284,7 @@ const FakeIdentity = ({ onBack, onConfirm, apiUrl }) => {
           onClose={handleCloseAlert}
           message={alert.message}
         />
-      </div>
+      </Box>
     </Container>
   );
 };
