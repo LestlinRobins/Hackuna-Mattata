@@ -266,7 +266,7 @@ const styles = {
   },
   headerTitle: {
     margin: 0,
-    fontSize: "1.5rem",
+    fontSize: "18px",
     fontWeight: "bold",
   },
   torButton: {
