@@ -26,7 +26,11 @@ const Call = () => {
     }
   }
   const toggleCall = () => {
-    setIsInCall(!isInCall);
+    if(userName==''){
+      alert('Invalid username.');
+    }else{
+      setIsInCall(!isInCall);
+    }
   };
 
   const toggleMute = () => {
@@ -62,17 +66,19 @@ const Call = () => {
             </div>
           </div>
 
-          <div style={{display:'flex', flexDirection:'row', justifyContent:'space-evenly', marginTop:'10%'}}>
+          <div style={{marginTop:'10%',display:'flex', flexDirection:'row', justifyContent:'center'}}>
             <input
               type="text"
               placeholder="Enter ID or search"
               className="call-input"
-              style={{width:'70%', height:'70px'}}
+              style={{width:'70%', height:'50px'}}
               value={userName}
               onChange={(e)=>setuserName(e.target.value)}
             />
-            <button className="call-button voice" onClick={toggleCall}>
-              <img src={callicon} alt="" />
+          </div>
+          <div style={{display:'flex', flexDirection:'row', justifyContent:'center'}}>
+            <button className="call-button voice" onClick={toggleCall} style={{marginRight:'10px'}}>
+                <img src={callicon} alt="" />
             </button>
             <button
               className="call-button video"
@@ -86,7 +92,7 @@ const Call = () => {
         </>
       )}
       {isInCall && (
-        <AudioRoom />
+        <AudioRoom userName={userName} />
       )}
       {isjoined && (
         <>

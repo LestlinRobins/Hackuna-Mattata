@@ -3,6 +3,7 @@ import AgoraRTC from 'agora-rtc-sdk-ng';
 import { FiMic, FiMicOff, FiPhone } from 'react-icons/fi';
 import VideoPlayer from './VideoPlayer';
 import "../styles/Call.css";
+import { CallEnd, CallEndTwoTone, Mic, MicExternalOffOutlined, MicExternalOnOutlined, MicOff, VolumeMuteOutlined } from '@mui/icons-material';
 const APP_ID = '608567868b1643d7bef27e64eb47e078';
 const TOKEN = '007eJxTYNjJtLr32jqO7AunHRnqH9xZeaX8yOdWrcVSLCZFTIzaaz4pMJgZWJiamVuYWSQZmpkYp5gnpaYZmaeamaQmmZinGphb3JM8k94QyMjwrmIZAyMUgvjcDKXFqUWGuiDSiIEBAD1jIhI=';
 const CHANNEL = 'user1-user2';
@@ -104,10 +105,10 @@ const VideoRoom = ({username}) => {
                   className={`control-button ${isMuted ? "active" : ""}`}
                   onClick={toggleMute}
               >
-                  {isMuted ? <FiMicOff /> : <FiMic />}
+                  {isMuted ? <MicOff /> : <Mic />}
               </button>
               <button style={{alignSelf:'center'}} className="control-button end" onClick={()=>refreshPage()}>
-                <FiPhone />
+                <CallEndTwoTone />
             </button>
             </div>
         </div>

@@ -5,6 +5,8 @@ import {
   FiSend,
   FiCornerUpLeft,
   FiX,
+  FiArrowUp,
+  FiTrash,
 } from "react-icons/fi";
 import "../styles/Chat.css";
 import { supabase } from "../supabase";
@@ -24,7 +26,8 @@ const Chat = () => {
 
   const [activeReply, setActiveReply] = useState(null);
   const [replyPreview, setReplyPreview] = useState(null);
-
+  const [showMenu, setShowMenu] = useState(false);
+  const [activeMessageId, setActiveMessageId] = useState(null);
   const [debugInfo, setDebugInfo] = useState({
     status: "Idle",
     lastEvent: null,
@@ -40,85 +43,48 @@ const Chat = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   };
 
-  // Setup realtime subscription
+  // Setup realtime subscription - simplified approach
   const setupRealtimeSubscription = async () => {
     try {
       // Clean up any existing subscription first
       if (subscriptionRef.current) {
-        await supabase.removeChannel(subscriptionRef.current);
+        supabase.removeChannel(subscriptionRef.current);
         subscriptionRef.current = null;
       }
 
       setDebugInfo({ status: "Setting up channel", lastEvent: null });
 
-      // Create a unique channel name for this conversation
-      const channelName = `messages_${Date.now()}`;
-
-      // Create a new subscription with specific filters
+      // Single subscription for all message changes
       const channel = supabase
-        .channel(channelName)
+        .channel("public:messages")
         .on(
           "postgres_changes",
           {
-            event: "INSERT",
+            event: "*",
             schema: "public",
             table: "messages",
-            filter: `user_id=eq.${currentUser.id},recipient_id=eq.${chatPartnerId}`,
           },
           (payload) => {
-            console.log("Received message from current user:", payload);
-            setDebugInfo((prev) => ({
-              status: "Received message from current user",
+            console.log("Received database change:", payload);
+            setDebugInfo({
+              status: `DB change: ${payload.eventType}`,
               lastEvent: new Date().toISOString(),
-            }));
-            setMessages((prev) => [...prev, payload.new]);
+            });
+
+            // Refresh messages completely after any database change
+            fetchMessages();
           }
         )
-        .on(
-          "postgres_changes",
-          {
-            event: "INSERT",
-            schema: "public",
-            table: "messages",
-            filter: `user_id=eq.${chatPartnerId},recipient_id=eq.${currentUser.id}`,
-          },
-          (payload) => {
-            console.log("Received message from chat partner:", payload);
-            setDebugInfo((prev) => ({
-              status: "Received message from chat partner",
-              lastEvent: new Date().toISOString(),
-            }));
-            setMessages((prev) => [...prev, payload.new]);
-          }
-        );
-
-      // Subscribe to the channel
-      const { error } = await channel.subscribe((status) => {
-        console.log("Subscription status:", status);
-        setDebugInfo((prev) => ({
-          ...prev,
-          status: `Subscription: ${status}`,
-        }));
-      });
-
-      if (error) {
-        console.error("Subscription error:", error);
-        setDebugInfo((prev) => ({
-          ...prev,
-          status: `Subscription error: ${error.message}`,
-        }));
-        return;
-      }
+        .subscribe((status) => {
+          console.log("Subscription status:", status);
+          setDebugInfo((prev) => ({
+            ...prev,
+            status: `Subscription: ${status}`,
+          }));
+        });
 
       subscriptionRef.current = channel;
-
-      console.log(
-        "Subscription set up successfully for chat between",
-        currentUser.id,
-        "and",
-        chatPartnerId
-      );
-      setDebugInfo((prev) => ({ ...prev, status: "Subscription active" }));
+      console.log("Simple subscription set up successfully");
     } catch (err) {
       console.error("Error setting up subscription:", err);
       setDebugInfo((prev) => ({
@@ -133,7 +99,7 @@ const Chat = () => {
       // Initial fetch of messages
       fetchMessages();
 
-      // Set up real-time subscription
+      // Set up real-time subscription - simpler approach
       setupRealtimeSubscription();
 
       // Cleanup function
@@ -161,6 +127,7 @@ const Chat = () => {
         chatPartnerId
       );
       setDebugInfo((prev) => ({ ...prev, status: "Fetching messages" }));
+
       // Properly formatted query with parameter binding
       const { data, error } = await supabase
         .from("messages")
@@ -253,6 +220,7 @@ const Chat = () => {
     };
 
     try {
+      setDebugInfo((prev) => ({ ...prev, status: "Sending message" }));
       const { data, error } = await supabase
         .from("messages")
         .insert([messageData])
@@ -263,8 +231,21 @@ const Chat = () => {
       setNewMessage("");
       setActiveReply(null);
       setReplyPreview(null);
+
+      // For immediate feedback, add the message to state directly
+      // The subscription should refresh everything shortly after
+      setMessages((prevMessages) => [...prevMessages, messageData]);
+
+      setDebugInfo((prev) => ({
+        ...prev,
+        status: "Message sent, waiting for refresh",
+      }));
     } catch (error) {
-      console.error("Reply error:", error);
+      console.error("Send error:", error);
+      setDebugInfo((prev) => ({
+        ...prev,
+        status: `Send error: ${error.message}`,
+      }));
     }
   };
 
@@ -278,29 +259,31 @@ const Chat = () => {
 
         // Wait for animation to complete before removing from database and state
         setTimeout(async () => {
+          setDebugInfo((prev) => ({ ...prev, status: "Deleting message" }));
           const { error } = await supabase
             .from("messages")
             .delete()
             .eq("id", messageId);
+
           if (error) throw error;
+
+          // For immediate feedback, remove message from state
           setMessages(messages.filter((msg) => msg.id !== messageId));
+
+          setDebugInfo((prev) => ({
+            ...prev,
+            status: "Message deleted, waiting for refresh",
+          }));
         }, 800); // Match this timeout to the animation duration
       }
     } catch (error) {
       console.error("Error deleting message:", error);
+      setDebugInfo((prev) => ({
+        ...prev,
+        status: `Delete error: ${error.message}`,
+      }));
     }
   };
-  useEffect(() => {
-    if (inChatMode && chatPartnerId) {
-      fetchMessages(); // Initial fetch
-
-      const interval = setInterval(() => {
-        refreshMessages();
-      }, 5000); // Adjust the interval time as needed
-
-      return () => clearInterval(interval); // Cleanup on unmount
-    }
-  }, [inChatMode, chatPartnerId]);
 
   // Format timestamp
   const formatTime = (timestamp) => {
@@ -312,7 +295,15 @@ const Chat = () => {
   const refreshMessages = () => {
     fetchMessages();
   };
-
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (!event.target.closest(".message")) {
+        setActiveMessageId(null);
+      }
+    };
+    document.addEventListener("click", handleClickOutside);
+    return () => document.removeEventListener("click", handleClickOutside);
+  }, []);
   // Render ID selection screen
   if (!inChatMode) {
     return (
@@ -321,13 +312,14 @@ const Chat = () => {
           <h1>Start a New Chat</h1>
         </div>
         <div className="id-selection-container">
-          <p>Enter the ID of the user you want to chat with:</p>
           <form onSubmit={enterChat} className="id-input-form">
+            <p>Enter the ID of the user you want to chat with:</p>
             <input
               type="text"
               className="input-field"
               placeholder="User ID..."
               value={chatPartnerInput}
+              required={true}
               onChange={(e) => setChatPartnerInput(e.target.value)}
             />
             <p>Enter your ID</p>
@@ -336,6 +328,7 @@ const Chat = () => {
               className="input-field"
               placeholder="User ID..."
               value={currentUser.id}
+              required={true}
               onChange={(e) =>
                 setCurrentUser({ ...currentUser, id: e.target.value })
               }
@@ -391,7 +384,7 @@ const Chat = () => {
           messages.map((message) => (
             <div
               key={message.id}
-              id={`message-${message.id}`} // Add this ID
+              id={`message-${message.id}`} // Unique ID for each message
               className={`message-wrapper ${
                 message.user_id === currentUser.id ? "own" : ""
               }`}
@@ -402,6 +395,7 @@ const Chat = () => {
                   {getInitials(message.user_id)}
                 </div>
               )}
+
               {message.reply_to && (
                 <div className="reply-indicator">
                   Replying to:{" "}
@@ -409,16 +403,39 @@ const Chat = () => {
                     "Original message deleted"}
                 </div>
               )}
+
+              {/* Show menu only for the clicked message */}
+              {activeMessageId === message.id && (
+                <div className="message-menu">
+                  {activeMessageId === message.id &&
+                    message.user_id === currentUser.id && (
+                      <button
+                        className="message-menu-button"
+                        onClick={() => deleteMessage(message.id)}
+                      >
+                        <FiTrash />
+                      </button>
+                    )}
+                  <button
+                    className="message-menu-button"
+                    onClick={() => startReply(message)}
+                  >
+                    <FiCornerUpLeft />
+                  </button>
+                </div>
+              )}
+
               <div className="message-content">
                 <div
                   className={`message ${
                     message.user_id === currentUser.id ? "sent" : "received"
                   }`}
-                  onDoubleClick={() =>
-                    message.user_id === currentUser.id &&
-                    deleteMessage(message.id)
-                  }
-                  onClick={() => startReply(message)}
+                  onClick={(e) => {
+                    e.stopPropagation(); // Prevent click bubbling
+                    setActiveMessageId(
+                      activeMessageId === message.id ? null : message.id
+                    ); // Toggle menu
+                  }}
                 >
                   {message.content}
                 </div>
@@ -443,7 +460,7 @@ const Chat = () => {
           onChange={(e) => setNewMessage(e.target.value)}
         />
         <button type="submit" className="input-button send-button">
-          <FiSend />
+          <FiArrowUp className="send-icon" />
         </button>
       </form>
     </div>

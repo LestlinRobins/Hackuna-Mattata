@@ -1,47 +1,103 @@
 // File: src/components/Home.jsx
+import { useState } from "react";
 import "../styles/Home.css";
+import Identity from "./Identity";
+import avatar1 from '../assets/avatar1.png'
+import avatar2 from '../assets/avatar2.png'
+import avatar3 from '../assets/avatar3.png'
 
 const Home = () => {
+  const [showIdentity, setShowIdentity] = useState(false);
+  const [image, setImage] = useState('');
+  const [selectedImage, setSelectedImage] = useState(''); // Track selected image
+
+  const handleCreateClick = () => {
+    setShowIdentity(true);
+  };
+
+  const handleBackClick = () => {
+    setShowIdentity(false);
+  };
+
+  const handleConfirmClick = () => {
+    setShowIdentity(false);
+    // You can add additional logic here if needed
+  };
+
+  const avatarImages = {
+    avatar1: avatar1,
+    avatar2: avatar2,
+    avatar3: avatar3
+  };
+
+  const handleAvatarClick = (imageKey) => {
+    setSelectedImage(imageKey);
+    setImage(avatarImages[imageKey]); 
+  };
+
+  // Render the Identity component if showIdentity is true
+  if (showIdentity) {
+    return <Identity image={image} onBack={handleBackClick} onConfirm={handleConfirmClick} />;
+  }
+
+  // Otherwise render the Home component
   return (
     <div className="home">
       <header className="header">
-        <h1>
-          Secure<span className="accent">Link</span>
-        </h1>
-        <p className="tagline">Your privacy matters</p>
+        <h1>Anyname</h1>
+        <div className="settings-icon">⚙️</div>
       </header>
 
-      <div className="status-card">
-        <div className="status-icon protected">
-          <span className="status-check">✓</span>
+      <div className="connection-banner">
+        <div className="status-icon">✓</div>
+        <p>Your connection is secured</p>
+      </div>
+
+      <div className="stats-container">
+        <div className="stat-item">
+          <h2>98</h2>
+          <p>Private Score</p>
         </div>
-        <div className="status-info">
-          <h2>Protected</h2>
-          <p>Your connection is secure</p>
+
+        <div className="stat-item">
+          <h2>1.2</h2>
+          <p>Data Saved</p>
+        </div>
+
+        <div className="stat-item">
+          <h2>247</h2>
+          <p>Threats Blocked</p>
         </div>
       </div>
 
-      <div className="feature-grid">
-        <div className="feature-item">
-          <h3>Privacy Score</h3>
-          <div className="score-circle">98</div>
-          <p>Excellent protection</p>
-        </div>
+      <div className="persona-section">
+        <h2>Step into a New Persona</h2>
+        <p className="subtitle">Identities are just a click away</p>
 
-        <div className="feature-item">
-          <h3>Data Saved</h3>
-          <div className="data">
-            <p className="data-value">1.2</p>
-            <p className="data-unit">GB</p>
+        <div className="avatar-grid">
+          <div
+            className={`avatar-item ${selectedImage === 'avatar1' ? 'selected' : ''}`}
+            onClick={() => handleAvatarClick('avatar1')}
+          >
+            <img src={avatar1} alt="Avatar 1" />
           </div>
-          <p>This month</p>
+          <div
+            className={`avatar-item ${selectedImage === 'avatar2' ? 'selected' : ''}`}
+            onClick={() => handleAvatarClick('avatar2')}
+          >
+            <img src={avatar2} alt="Avatar 2" />
+          </div>
+          <div
+            className={`avatar-item ${selectedImage === 'avatar3' ? 'selected' : ''}`}
+            onClick={() => handleAvatarClick('avatar3')}
+          >
+            <img src={avatar3} alt="Avatar 3" />
+          </div>
         </div>
 
-        <div className="feature-item">
-          <h3>Threats Blocked</h3>
-          <p className="threat-value">247</p>
-          <p>Last 30 days</p>
-        </div>
+        <button className="create-button" onClick={handleCreateClick}>
+          Create
+        </button>
       </div>
     </div>
   );
