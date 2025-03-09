@@ -263,4 +263,172 @@ const Browser = () => {
   );
 };
 
+// Styles
+const styles = {
+  browser: {
+    display: "flex",
+    flexDirection: "column",
+    height: "100vh",
+    backgroundColor: "#121212",
+    color: "white",
+    fontFamily: "Arial, sans-serif",
+  },
+  header: {
+    display: "flex",
+    justifyContent: "space-between",
+    alignItems: "center",
+    padding: "15px",
+    borderBottom: "1px solid #333",
+  },
+  headerTitle: {
+    margin: 0,
+    fontSize: "18px",
+    fontWeight: "bold",
+  },
+  torButton: {
+    width: "36px",
+    height: "36px",
+    borderRadius: "50%",
+    border: "none",
+    color: "white",
+    fontSize: "18px",
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    cursor: "pointer",
+  },
+  addButton: {
+    width: "36px",
+    height: "36px",
+    borderRadius: "50%",
+    border: "none",
+    backgroundColor: "#e91e63",
+    color: "white",
+    fontSize: "20px",
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    cursor: "pointer",
+  },
+  searchBarContainer: {
+    padding: "15px",
+  },
+  urlForm: {
+    width: "100%",
+  },
+  searchBar: {
+    display: "flex",
+    alignItems: "center",
+    backgroundColor: "#333",
+    borderRadius: "30px",
+    padding: "8px 15px",
+  },
+  searchIcon: {
+    marginRight: "10px",
+    color: "#888",
+  },
+  searchInput: {
+    flex: 1,
+    background: "transparent",
+    border: "none",
+    color: "white",
+    fontSize: "15px",
+    outline: "none",
+  },
+  errorMessage: {
+    padding: "10px 15px",
+    backgroundColor: "#ff5252",
+    color: "white",
+    margin: "0 15px",
+    borderRadius: "5px",
+    fontSize: "14px",
+  },
+  browserContent: {
+    flex: 1,
+    overflow: "auto",
+    padding: "0 15px",
+  },
+  loadingScreen: {
+    display: "flex",
+    flexDirection: "column",
+    justifyContent: "center",
+    alignItems: "center",
+    height: "100%",
+    textAlign: "center",
+  },
+  loadingSpinner: {
+    border: "3px solid #f3f3f3",
+    borderTop: "3px solid #3498db",
+    borderRadius: "50%",
+    width: "30px",
+    height: "30px",
+    animation: "spin 2s linear infinite",
+    margin: "20px 0",
+  },
+  webpageContainer: {
+    height: "100%",
+    display: "flex",
+    flexDirection: "column",
+  },
+  webpageHeader: {
+    padding: "10px 0",
+    fontSize: "14px",
+  },
+  securityNotice: {
+    color: "#4CAF50",
+    fontSize: "12px",
+    margin: "5px 0",
+  },
+  iframeContainer: {
+    position: "relative",
+    flex: 1,
+    backgroundColor: "#fff",
+    borderRadius: "6px",
+    overflow: "hidden",
+  },
+  webpageIframe: {
+    width: "100%",
+    height: "100%",
+    border: "none",
+  },
+  iframeOverlay: {
+    position: "absolute",
+    bottom: 0,
+    left: 0,
+    right: 0,
+    backgroundColor: "rgba(0,0,0,0.7)",
+    padding: "10px",
+  },
+  overlayNotice: {
+    margin: 0,
+    fontSize: "12px",
+    color: "#fff",
+  },
+  startPage: {
+    padding: "10px 0",
+  },
+  trendingHeader: {
+    marginBottom: "15px",
+    fontSize: "16px",
+    fontWeight: "normal",
+  },
+  trendingItem: {
+    backgroundColor: "#1e1e1e",
+    borderRadius: "8px",
+    padding: "15px",
+    marginBottom: "15px",
+  },
+  trendingTitle: {
+    margin: "0 0 8px 0",
+    fontSize: "14px",
+    fontWeight: "bold",
+  },
+  trendingSubtitle: {
+    margin: 0,
+    fontSize: "12px",
+    color: "#aaa",
+    lineHeight: "1.4",
+  },
+};
+
 export default Browser;
