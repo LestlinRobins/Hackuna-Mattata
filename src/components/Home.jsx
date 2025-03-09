@@ -51,7 +51,7 @@ const Home = () => {
   return (
     <div className="home">
       <header className="header">
-        <h1>Anyname</h1>
+        <h1>Distral</h1>
         <div className="settings-icon">⚙️</div>
       </header>
 
